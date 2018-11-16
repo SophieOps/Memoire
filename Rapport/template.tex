@@ -1,0 +1,451 @@
+\documentclass[a4paper,final]{article}
+
+%%#################### PACKAGES DE BASE ############################################
+\usepackage[latin1]{inputenc}%-[latin1]{inputenc}
+%\usepackage[francais]{babel} %- sans option, choisit la langue en fonction de celle d\'efinie dans la classe du document
+\usepackage[french,frenchb]{babel} %%adapte les r\`egles typographique en fonction de la langue
+\usepackage[T1]{fontenc} %-
+%%#################### MISE EN PAGE ###################################################
+\usepackage{fancyhdr} % Required for custom headers
+\usepackage[fs]{umons-coverpage}
+\usepackage{color}
+\usepackage{lastpage} % Required to determine the last page for the footer
+%\usepackage{extramarks} % Required for headers and footers
+%\usepackage{pifont} % pour les puces personnalis\'ees/caract\`ere sp\'eciaux,...
+%\usepackage{enumitem} % pour d'autres puces
+%\usepackage[backend=biber]{biblatex} % pour la bibliographie
+%\addbibresource{biblio.bib} % pour la bibliographie
+\usepackage{listings} % pour afficher du Code source
+%%#################### MATHS #########################################################
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{algorithmic}% pour include du pseudo code
+%%#################### TABLEAUX #######################################################
+%\usepackage{array}                       
+%%#################### DIVERS (graphique, url, annexe, .eps, code) ####################
+\usepackage{graphicx} % Required to insert images
+\usepackage{hyperref} % pour les url
+%\usepackage{tikz} % arbres
+%\usetikzlibrary{arrows} pour d\'efinir des fl\`eche dans les arbres
+%\usepackage{times}
+%\usepackage{rotate}
+%\usepackage{lscape}
+%\usepackage{listings} % Required for insertion of code
+%\usepackage{verbatim}
+%\usepackage{eurosym}
+%\usepackage{caption} % pour la position des images
+%\usepackage{float,caption} % pour la position des images
+%\usepackage{algpseudocode} % pour include du pseudo code
+\usepackage{cite} %%permet d'ordonner plusieurs r\'ef\'erences cit\'ees en mÕme temps et de les afficher sous la forme d'un intervalle si elle se suivent
+
+% Margins
+%\topmargin=-0.45in
+%\textwidth=6.5in
+%\textheight=9.8in
+%\headsep=0.25in
+
+%%######################## START CHANGE HERE ##########################
+\author{Sophie Opsommer}
+\title{Application smartphone pour l'entrainement en neuro-physiologie g\'en\'erale}
+\umonsAuthor{\begin{tabular}{lll}
+\textsc{Opsommer} & Sophie & SOPHIE.OPSOMMER@student.umons.ac.be\\
+\end{tabular} }
+%% The main title of your thesis
+\umonsTitle{Application smartphone pour l'entrainement en neuro-physiologie g\'en\'erale}
+%% The sub-title of your thesis
+\umonsSubtitle{Projet r\'ealis\'e dans le cadre \\du Master en sciences informatiques, \`a finalit\'e sp\'ecialis\'ee}
+%% Your supervisor(s)
+\umonsSupervisor{\begin{tabular}{ll}
+\textit{Co-Directeur} : & L. \textsc{Ris} \\
+\textit{Co-Directeur} : & B. \textsc{Quoitin} \\
+\textit{Rapporteur} : & . \textsc{} \\
+\textit{Rapporteur} : & . \textsc{} \\
+\end{tabular}}
+%% The date (or academic year)
+\umonsDate {Janvier 2016}
+%%##################### END CHANGEMENT ##################################
+
+%%##################### SET UP THE HEADER AND FOOTER ####################
+\fancyhf{}
+\chead{\leftmark}
+%\rhead{\firstxmark} % Top right header
+%\lfoot{\lastxmark} % Bottom left footer
+%\cfoot{} % Bottom center footer
+\rfoot{Page \thepage\ sur \protect\pageref{LastPage}} % Bottom right footer
+
+\graphicspath{{Images/}} %pour l'emplacement des images
+\newcommand{\annexe}[1]{annexe~\ref{#1} (page~\pageref{#1})}
+\newcommand{\labelfigure}[1]{figure~\ref{#1} (page~\pageref{#1})}
+\newcommand{\smalltitle}[1]{\bigskip\large\textbf{#1}\par\normalsize\medskip}
+\newcommand{\partitle}[1]{\bigskip\textit{\underline{#1}}\par\medskip}
+%%\newtheorem{defi}{D\'efinition}
+%%\newtheorem{note}{Note}
+%%\newtheorem{prop}{Propri\'et\'e}
+%%\newtheorem{exemple}{Exemple}
+%%\newtheorem{corollaire}{Corollaire}
+%%\newtheorem{lemme}{Lemme}
+%%\newtheorem{rem}{Remarque}
+%%\newtheorem{thm}{Th\'eor\`eme}
+
+\begin{document}
+%%#################### TITLE PAGE ####################
+%// Couverture
+%//avec l'unif ou la fac, nomp auteur, titre du travail, date de remise (moi + ann\'ee), nom du directeur
+\thispagestyle{empty}
+%\umonsCoverPage
+\pagebreak
+
+
+\newpage
+\thispagestyle{empty}
+%\begin{center}
+%\includegraphics[width = 60mm]{logoUMONS+txt.png} \hfill 
+%\includegraphics[width = 40mm]{logo_faculte_des_sc.jpg} \hfill 
+%\end{center}
+%\centering % Center everything on the page
+%	HEADING SECTIONS
+\vspace*{\stretch{1}}
+\begin{abstract}
+Ce \emph{rapport de projet} (dont le titulaire est Mr. \emph{B. QUOITIN} et les enseignant sont \emph{V. BRUYERE}, \emph{H. MELOT}, \emph{T. MENS} et \emph{J. WIJSEN} en ann\'ee acad\'emique 2015-2016) est rendu dans le cadre du cursus de \og Master en sciences informatique\fg . Le but de ce rapport est de pr\'esenter le probl\`eme qui est pos\'e, de d\'evelopper l'analyse du probl\`eme et les choix r\'ealis\'es et exposer la r\'ealisation.
+\end{abstract}
+\vspace*{\stretch{1}}
+
+
+%%#################### Acknoledge ####################
+%\newpage
+%//Remerciements (facultatif) bon example dans le livre de r\'ef\'erence musimoti
+%\pagenumbering{gobble}
+%\clearpage
+%\thispagestyle{empty}
+%Note aux lecteurs : 
+%Cette version n'a pas \'et\'e relue et donc comporte probablement beaucoup de fautes d'orthographes. une version corrig\'ee est post\'ee sur moodle.
+%Merci de votre compr\'ehension
+%Sophie
+%\clearpage
+
+%Votre tuteur de m\'emoire, pour l'aide et le temps qu'il vous a consacr\'e + Les personnes qui vous ont transmis des informations, pour leur collaboration \`a ce projet + Les personnes qui ont accept\'e de r\'epondre \`a vos questions, pour leur contribution, + Les personnes qui ont donn\'e un avis critique sur votre m\'emoire...
+%Je tiens \`a remercier toutes les personnes qui ont contribu\'e au succ\`es de ce projet et qui m'ont aid\'e lors de la r\'edaction de ce rapport.
+
+%Tout d'abord, j'adresse mes remerciements \`a mon professeur, Mr Bruno Quoitin du d\'epartement informatique de l'Universit\'e UMONS qui m'a beaucoup aid\'e dans ma recherche %de stage et m'a permis de postuler dans cette entreprise. 
+%Son \'ecoute et ses conseils m'ont permis de cibler %mes candidatures, et de trouver ce stage qui \'etait en totale ad\'equation avec mes attentes.
+
+%Je tiens \`a remercier vivement mon second directeur de projet, Mme Laurence RisX, du d\'epartement de m\'edecine de l'universit\'e UMONS, pour son accueil, le temps pass\'e ensemble %et le partage de son expertise au quotidien. 
+%Gr?ce aussi \`a sa confiance j'ai pu m'accomplir totalement dans mes missions. 
+%Il fut d'une aide pr\'ecieuse dans les moments les plus d\'elicats.
+
+%Je remercie \'egalement toute l'\'equipe E pour leur accueil, leur esprit d'\'equipe et en particulier Mr DDDD, qui m'a beaucoup aid\'e \`a comprendre les probl\'ematiques d'achats s\'ecuris\'es...
+
+%Enfin, je tiens \`a remercier toutes les personnes qui m'ont conseill\'e et relu lors de la r\'edaction de ce rapport de stage.
+
+%%#################### TABLE OF CONTENTS ####################
+%\frontmatter          % for the preliminaries nm\'erotation en chiffres romains
+\newpage
+\thispagestyle{empty}
+\tableofcontents
+
+%\mainmatter          % start of the contributions chapitre num\'erot\'e en chiffres
+%%#################### LE RAPPORT COMMENCE ICI ####################
+%%\smalltitle{Note pr\'eliminaire}
+%%\addcontentsline{toc}{section}{Note pr?©liminaire}
+%%La r?©daction de ce document est bas?© sur le livre \textit{Introduction to algorithme}~\cite{intro_to_algo}
+\newpage
+\pagestyle{fancy}  % headings (nom du chapitre et le num\'ero de page en en-tÕte), plain(num\'ero de page au milieu du pied de page), empty
+\section{Introduction}\label{sec:intro}
+%//Introduction
+%//contexte
+%//d\'efinission du probl\`eme (pq le prob est important ? )
+%//pr\'esentation
+%//limitation des solutions existantes
+%//objectif du travail
+%//id\'ees principales
+
+Un \'etudiant n'a-t'il jamais r\'ev\'e de pouvoir se retrouver en situation d'examen ? de pouvoir s'\'evaluer ou de savoir o\`u en est son niveau d'\'etude ?
+
+Un professeur n'a-t'il jamais esp\'erer pouvoir \^etre s\^ur que ses questions d'examens seront comprises par ses \'el\`evess ? de pouvoir leur proposer les meilleurs outils pour leur r\'eussite ? de pouvoir observer l'\'evolution de l'\'etude d'une classe ?
+
+Ce projet \`a pour but de r\'epondre \`a ce besoin pour les \'el\`eves de premi\`ere ann\'ee de bachelier de la facult\'e de M\'edecine et de Pharmacie pour le cours de Neurophysiologie g\'en\'erale de Madame Laurence Ris.\\
+Il a pour but de r\'ealiser d'une part un site internet et une application mobile multiplateforme qui permette aux \'etudiants d'avoir acc\`es \`a des simulations d'examen et de pouvoir \'evaluer leurs connaissances gr\^ace \`a une cotation objective.\\
+Et d'autre part, le site sera compos\'e d'un acc\`es ind\'ependant pour le professeur lui permettant d'ajouter et de supprimer des questions ainsi que de consulter les diff\'erentes statistiques li\'ees aux diff\'erentes questions et \`a l'ensemble de la classe.
+
+Chaque simulation d'examen sera compos\'ee de questions abordant les diff\'erents th\`emes du cours d\'ej\`a vu en classe. Chaque question est elle-meme compos\'ee de 3 affirmations. Pour chacune d'elle, la v\'eracit\'e est remise en cause. Pour obtenir le point li\'e \`a une question, il faut que les r\'eponces des 3 affirmations soient correctes.\\
+Outre la simulation, chaque \'etudiant pourra consulter ses statistiques (taux de r\'eussite par th\`eme, progression, ...). Il sera aussi possible de comparer ses r\'esultats avec les statistiques globales de la classe(de fa¡on anonyme).
+L'enseignant, lui, accedera \`a une autre interface qui lui permettra la gestion de ses questions et \`a la vue des r\'esultats de l'ensemble de la classe.
+
+Une heuristique sera mise en place pour que les affirmations correctement r\'eponduent par un \'etudiant lui soient moins souvent re-pr\'esent\'ees.
+
+%L''application se veut modulaire et esp\`ere ensuite pouvoir Õtre utilis\'ee par d'autres professeurs.
+
+%%Les applications (client et serveur) doivent etre d evelopp ees de mani ere able, s ecuris ee, modulaire. Elles doivent  egalement pouvoir etre adapt ees facilement lors de l'apparition de nouvelles exigences et technologies. L'application smartphone d evelopp ee doit etre de pr ef erence multiplateforme, afin de lui permettre de fonctionner sur Android, iPhone et  eventuellement Windows Phone.
+
+
+%%Apr es chaque auto- evaluation, le serveur re coit automatiquement du smartphone les r esultats.
+\vspace*{30mm}
+%//br\`eve description du contenu chapitre par chapitre
+Dans la suite de ce travail seront pr\'esent\'e le cahier des charges, les besoins mat\'eriels et logiciel, le vocabulaire propre au projet pour \'eviter toute ambigu‘t\'e,...
+
+\newpage
+%//Chapitres
+%//pr\'esentation du probl\`eme
+%//situation du probl\`eme dans son contexte (\'etat de l'art, r\'esultats d\'ej\`a connus)
+%//pr\'esentation des diff\'erentes approches possibles
+%//motivation des choix effectu\'es
+%//pr\'esentation du travail effectu\'e
+%//comparer les r\'esultats connus avec les r\'esultats obtenus
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Cahier des charges}
+Cette section permet de fixer les limites et les choix pris et impos\'es en commen¡ant par ceux li\'es au projet, ensuite ceux li\'es \`a l'\'etude.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Exigences fonctionnelles}
+Un apper¡u des fonctionnalit\'es qui seront, \`a priori, disponibles lors de l'impl\'ementation de la solution est disponible \`a la figure \labelfigure{usecase}.
+\begin{figure}[ht]
+   \includegraphics[width=\textwidth]{usecaseV2.pdf}
+   \caption{\label{usecase} Usecase illustrant les fonctionnalit\'es du produit demand\'e \emph{usecase}}
+\end{figure}
+\subsubsection{Pour les \'etudiants}
+\begin{enumerate}
+\item s'authentifier ;
+\item r\'ealiser une simulation ;
+\item visualiser ses propes statistiques ;
+\item visualiser simultan\'ement les statistiques de tous les \'etudiants inscrits de l'ann\'ee en cours.
+\end{enumerate}
+
+\subsubsection{Pour le professeur}
+\begin{enumerate}
+\item s'authentifier ;
+\item ajouter et supprimer des affirmations ;
+\item attribuer chaque affirmation \`a un th\`eme
+\item selectionner les th\`emes visibles
+\item visualiser les statistiques de chaque affirmation.
+\item visualiser la progression des \'etudiants de l'ann\'ee en cours
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Exigences non-fonctionnelles}
+%Lors de l'analyse du probl\`eme, il faut garder \`a l'esprit qu'un des aspects principaux est la ...
+%Lors de l'impl\'ementation, il est important de veiller \`a ce que les interfaces soient intuitives etagr\'eables.
+L'application a pour public des \'etudiants de premi\`ere ann\'ee qui n'ont pas forc\'ement d'attrait pour l'utilisation des technologies donc elle se voudra la plus simple d'utilisation possible avec des interfaces intuitives.
+
+Les applications devant tourner sur la plupart des smartphones, il faudra essayer qu'elle soit la plus l\'eg\`ere possible et enti\`erement compatible entre les plateformes.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Les ressources logicielles}
+Pour la r\'edaction du rapport, le choix de l'\'editeur de texte c'est port\'e vers le syst\`eme de composition de documents \LaTeX \footnote{sous licences LPPL(LaTeX Project Public License) avec les logiciels et versions : Texmaker $4.4.1$ (\hyperref[texmaker]{http://www.xm1math.net/texmaker}) et Miktex $2.9.5721$ 64bit (\hyperref[miktex]{http://miktex.org/download})} qui permet une mise en page propre et modulable.
+
+Pour les raisons expliqu\'ee \`a la section suivante, la programmation des applications a \'et\'e r\'ealis\'ee par ... et le site internet \`a \'et\'e d\'evelopp\'e avec ...
+
+Le site web est h\'eberg\'e par l'universit\'e. Le choix se posait entre ... et ... . Pour les raisons ... le syst\`eme ... a \'et\'e choisit avec les sp\'ecificit\'es suivantes : 
+\begin{enumerate}
+\item Capacit\'e m\'emoire : 
+\item Bande passante : 
+\item Addresse URL : 
+\end{enumerate}
+
+\subsection{Solutions propos\'ees}
+La demande premi\`ere de Mme Ris est la cr\'eation de 3 applications mobiles (pour les 3 syst\`emes d'exploitation pour smartphones) et d'un site Web pour les \'etudiant et d'un site web pour sa gestion du backoffice. Cependant toutes les \'eventualit\'es ont \'et\'e analys\'ee. Les sous-sections suivantes propose une analyse des diff\'erentes solutions, de leurs caract\'eristiques, de leurs avantages et de leurs inconv\'enients.
+
+\subsubsection{Pour les \'etudiants}
+\smalltitle{Un site Web}
+Une premi\`ere solution est de d\'evelopper un site internet (adapt\'e pour l'acc\`es aux smartphones c-\`a-d responsive) qui fournirait toutes les fonctionnalit\'ees demand\'ees.\\
++ accessible depuis n'importe quel appareil (smartphone, tablette, ordinateur) \\%bootstrap
++ adapt\'e \`a toutes les tailles d'\'ecrans (petit - grand / portrait et paysage)\\
++ tous les \'etudiant ont internet et un ordinateur. Tous n'ont peut-Õtre pas de smartphone\\
+- non accessible hors-ligne\\
+
+\smalltitle{Une application}
+Chaque \'etudiant pourrait t\'el\'echarger l'application, l'installer et en suite l'utiliser.\\
++ accessible hors-ligne
+- pas toujours \`a jour (si il y a eu des modifications dans les questions (il faut donc une phase de syncronisation au lancement de l'application) \\
+- pas accessible depuis un ordinateur ou une tablette\\
+
+\subsubsection{Pour le professeur}
+\smalltitle{Un site Web}
+Une premi\`ere solution est de d\'evelopper un site internet (adapt\'e pour l'acc\`es aux smartphones c-\`a-d responsive) qui fournirait toutes les fonctionnalit\'ees demand\'ees.\\
++ plus facile d'\'ecrire au clavier que sur un \'ecran tactile\\
++ accessible depuis n'importe o\`u\\
+
+\smalltitle{Une application}
+Le professeur aurait lui \`a utiliser la mÕme application (son authentification lui donnerait d'autres acc\`es) ou une application tout-\`a-fait ind\'ependante.\\
++ toujours sur soi\\
++ d\'emonstration aux \'el\`eves\\
+- travail plus long pour la gestion des questions\\
+- \'ecran petit\\
+
+
+Au vue de ces informations, il convient de fixer que utiliser une application pour le professeur n'est pas une bonne id\'ee. Cependant pour les \'etudiant il y a du bon dans les deux solutions. L'infrastructure retenue est que le professeur acc\`ede au backoffice via un site internet et que les \'el\`eves ont le choix d'utiliser le site internet et/ou l'application mobile.
+
+\subsection{Solutions existantes}
+\smalltitle{Moodle}
+A partir de l'interface Moodle, il est possible de cr\'eer des questions de test. Plusieurs choix sont propos\'es. En consid\'erant le probl\`eme le plus simple : avoir des affirmation \`a proposer aux \'el\`eves et qu'ils y r\'epondent par vrai ou faux. Voici l'\'evaluation des solutions disponibles : 
+\begin{enumerate}
+\item[Appariement] La r\'eponse \`a chaque sous-question doit Õtre choisie parmi une liste de possibilit\'es pr\'ed\'efinies. \\ 
+Cette option n'est pas utilisable. En effet, il faudrait mettre les 3 affirmations d'un cŸt\'e et les r\'eponses possible de l'autre. Seulement, la plateforme n'acceptera que une des trois occurance du mot "Vrai" et l'\'el\`eve ne saura pas faire la diff\'erence.
+
+\item[Calcul\'ee]Les questions calcul\'ees sont des questions num\'eriques dont les nombres sont tir\'es al\'eatoirement d'un jeu de donn\'ees lorsque le test est effectu\'e. \\
+Cette option n'est pas utilisable. Elle s'addresse \`a des questions math\'ematiques.
+
+\item[Calcul\'ee \`a choix multiples] Les questions calcul\'ees \`a choix multiples sont comme des questions \`a choix multiples, dans lesquelles les \'el\'ements de choix peuvent inclure des r\'esultats de fonctions int\'egrant des valeurs de variables tir\'ees al\'eatoirement d'un jeu de donn\'ees au lancement du test. \\
+Cette option n'est pas utilisable. Elle s'addresse \`a des questions math\'ematiques.
+
+\item[Calcul\'ee simple] Version simplifi\'ee des questions calcul\'ees (questions num\'eriques dont les nombres sont tir\'es al\'eatoirement d'un jeu de donn\'ees lorsque le test est effectu\'e). \\
+Cette option n'est pas utilisable. Elle s'addresse \`a des questions math\'ematiques.
+
+\item[Choix multiple] Permet la s\'election d'une ou plusieurs r\'eponses dans une liste pr\'ed\'efinie. \\
+Cette option est utilisable. En Effet, il est possible de mettre les trois affirmations dans la question et ensuite les r\'eponses possibles sont les 8 combinaisons de correspondances Vrai ou Faux de chaque affirmation. La figure \labelfigure{choix} montre un exemple de question g\'en\'er\'ee avec l'outil \emph{Moodle}.
+\begin{figure}[ht]
+   \includegraphics[width=\textwidth]{choix.png}
+   \caption{\label{choix} Exemple de question \`a choix multiples g\'en\'er\'ee avec l'outil \emph{Moodle}}
+\end{figure}
+
+\item[Composition] Permet une r\'eponse de plusieurs phrases ou paragraphes. Cette question doit Õtre \'evalu\'ee manuellement. \\ 
+Cette option n'est pas utilisable puisque le souhait est une proc\'edure automatis\'ee.
+
+\item[Num\'erique] Permet une r\'eponse num\'erique, le cas \'ech\'eant avec des unit\'es, qui est \'evalu\'ee en comparant divers mod\`eles de r\'eponses, comprenant une tol\'erance. \\
+Cette option n'est pas utilisable car la r\'eponse n'a pas le format souhait\'e.
+
+\item[Question Cloze] Les questions de ce type sont tr\`es flexibles, mais ne peuvent Õtre cr\'e\'ees qu'en tapant du texte suivant un format particulier avec des codes sp\'ecifiques qui cr\'e\'eent des questions \`a choix multiples, des questions \`a r\'eponses courtes et des questions num\'eriques int\'egr\'ees. \\
+Cette option est plus compliqu\'ee \`a r\'ediger puisqu'elle demande un peu de compr\'ehension de programmation. Cependant, une foix le canevas cr\'e\'e, il suffit de le reproduire. La figure \labelfigure{cloze} illustre un exemple de question cr\'e\'e \`a partir des lignes suivantes : \\
+\rule{\linewidth}{.5pt}
+\begin{tt}
+Ceci est la premi\`ere affirmation de la question Cloze\\ \{1:MULTICHOICE:=Vrai\#Bonne r\'eponce~Faux\#Mauvaise r\'eponse\}\\
+Ceci est la deuxi\`eme affirmation \{1:MULTICHOICE:=Vrai\#Bonne\\ r\'eponse~Faux\#Mauvaise r\'eponse\}\\
+Ceci est la quatri\`eme affirmation \{1:MULTICHOICE:\%0\%Vrai\#\\
+Mauvaise r\'eponse$\sim$=Faux\#Bonne r\'eponse\}\\
+\end{tt}
+\rule{\linewidth}{.5pt}
+\begin{figure}[ht]
+   \includegraphics[width=\textwidth]{cloze.png}
+   \caption{\label{cloze} Exemple de question \`a choix multiples g\'en\'er\'ee avec l'outil \emph{Moodle}}
+\end{figure}
+
+\item[Question de correspondance] Une question d'appariement cr\'e\'ee \`a partir des questions \`a r\'eponse courte d'une cat\'egorie \\
+L'id\'ee est int\'eressante puisqu'il est possible de piocher des questions de fa¡on al\'eatoire dans une s\'erie de question mais le type de question ne correspond pas puisqu'il sagit du type : r\'eponse courte.
+
+\item[R\'eponse courte] Permet une r\'eponse d'un ou quelques mots, \'evalu\'ee en comparant divers mod\`eles de r\'eponses, pouvant contenir des jokers. \\
+Cette option n'est pas utilisable car la r\'eponse n'a pas le format souhait\'e. En effet il faut pr\'evoir les r\'eponses possibles et attribuer des points en fonction de ses estimations. Un aper¡u se trouve en \labelfigure{courte}.
+\begin{figure}[ht]
+   \includegraphics[width=\textwidth]{repcourte.png}
+   \caption{\label{courte} Exemple de question ouverte g\'en\'er\'ee avec l'outil \emph{Moodle}}
+\end{figure}
+
+\item[Vrai/Faux] Une forme simplifi\'ee de choix multiple avec les deux seules options Vrai et Faux.\\
+Cette option est utilisable puisqu'elle correspond \`a notre utilisation. Cependant, elle ne permet pas d'augmenter la complexit\'e de la situation.
+
+\item[Description] Il ne s'agit pas d'une v\'eritable question. C'est plutŸt une fa¡on d'ins\'erer des instructions, indications ou autres informations dans le test, de la mÕme fa¡on que les \'etiquettes sur la page du cours. \\
+Cette option est utilisable mais pas pour les questions, elle permet donner de l'information ou des consignes aux \'el\`eves.
+\end{enumerate}
+
+A ce stade, nous avons retenu 3 solutions possibles. Soit on cr\'ee les affirmations une par une avec les questions \`a r\'eponse binaire (V - F), soit on cr\'ee des groupes de 3 affirmations avec les questions \`a choix multiple ou avec les questions cloze.
+
+Une fois les questions cr\'e\'ees, il faut cr\'eer un test. Un test se cr\'ee en 2 \'etape. \\
+Dans la premi\`ere, on d\'efinit l'enveloppe d'un test (nom, description, nombre de question par page, la navigation entre les questions,... ).\\
+Dans la seconde \'etape, il convient de d\'efinir les questions \`a placer dans le test. Il est possible d'ajouter des questions bien d\'efinie ou des questions al\'eatoires.\\
+Si les questions ont \'et\'e class\'e par cat\'egorie, il est mÕme possible de choisir de quelle cat\'egorie doivent provenir les questions.
+
+Avec toutes ces possibilit\'es, on se rapproche de la solution voulue.
+Cependant, certains \'el\'ements font qu'il n'est pas possible de faire coller toutes ces possibilit\'es au mod\`ele voulu : 
+\begin{enumerate}
+\item il faut accorder 1 point pour 3 bonnes r\'eponses dans une mÕme cat\'egorie
+\item il faut une heuristique dans l'al\'eatoire pour \'eviter les questions d\'ej\`a correctements r\'epondues.
+\item ...
+\end{enumerate}
+
+\smalltitle{C++ avec le framework QT}
+\hyperref[QT]{http://www.qt.io/}). Il permet de d\'evelopper des applications (et autres) portable (on d\'eveloppe une fois et ensuite les diff\'erents codes (android, iOS, Windows Phone) sont adapt\'es que ce soit pour ordinateur, smartphones, tablette,...
+
+\smalltitle{HTML CSS et javascript avec le framework Cordova }
++ open source
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Le diagramme de contexte}
+acteurs principaux ?
+	Aux \'el\`eves de BAC1 et \`a leur professeur 
+acteurs secondaire ?
+	le serveur web, la base de donn\'ee interne au smartphone et distante
+packages et acteurs ?
+	la simulation : les \'el\`eves
+	Les statistiques : les \'el\`eves et le proffesseur
+	le backoffice : le professeur
+las cas d'utilisation ? 
+	s'authentifier
+	faire une simulation
+	voir ses statistiques
+	voir les statistiques de la calsse
+	g\'erer les questions
+	se d\'econnecter
+	
+	
+
+
+
+%//Conclusion
+%//r\'esum\'e du travail et des contributions
+%//rappel des r\'esultats principaux
+%//application possible des r\'esultats
+%//limiation de la solution
+%//piste d'\'eventuels travaux futurs
+
+\newpage
+%//Bibliographie
+\bibliographystyle{plain}
+%\bibliography{reference}
+
+
+
+\begin{thebibliography}{9}
+\bibitem {KarelRektorys}Rektorys, K., \textit{Variational methods in Mathematics,
+Science and Engineering}, D. Reidel Publishing Company,
+Dordrecht-Hollanf/Boston-U.S.A., 2th edition, 1975
+
+\bibitem {Bertoti97} \textsc{Bert\'{o}ti, E.}:\ \textit{On mixed variational formulation
+of linear elasticity using nonsymmetric stresses and
+displacements}, International Journal for Numerical Methods in
+Engineering., \textbf{42}, (1997), 561-578.
+
+\bibitem {Szeidl2001} \textsc{Szeidl, G.}:\ \textit{Boundary integral equations for
+plane problems in terms of stress functions of order one}, Journal
+of Computational and Applied Mechanics, \textbf{2}(2), (2001),
+237-261.
+
+\bibitem {Carlson67}  \textsc{Carlson D. E.}:\ \textit{On G\"{u}nther's stress functions
+for couple stresses}, Quart. Appl. Math., \textbf{25}, (1967),
+139-146.
+
+- \hyperref[moodle]{https://docs.moodle.org}
+- \hyperref[ocr]{https://openclassrooms.com} dont les formations : Comprendre le Web, D\'ebutez l'analyse logicielle avec UML
+
+\end{thebibliography}
+
+
+%//Annexes (facultatif)
+%// - Fixer le vocabulaire et des notations+
+
+Vocabulaire : 
+\begin{enumerate}
+\item[Test] (Dans moodle)Le module d'activit\'e test permet \`a l'enseignant de cr\'eer des tests comportant des questions de divers types, notamment des questions \`a choix multiples, vrai-faux, de correspondances, \`a r\'eponses courtes ou calcul\'ees.\\
+L'enseignant peut autoriser plusieurs tentatives pour un test, les questions \'etant m\'elang\'ees ou choisies al\'eatoirement dans une banque de questions. Une limite de temps peut Õtre fix\'ee.\\
+Chaque tentative est \'evalu\'ee automatiquement, \`a l'exception des questions de composition, et la note est enregistr\'ee dans le carnet de notes.\\
+L'enseignant peut choisir quand et si il veut que des indices, un feedback et les r\'eponses correctes soient propos\'es aux \'etudiants.\\
+Les tests peuvent notamment Õtre utilis\'es : pour des \'evaluations certificatives (examen), comme mini-tests pour des devoirs de lecture ou au terme de l'\'etude d'un th\`eme, comme exercice pour un examen, en utilisant les questions de l'examen de l'ann\'ee pr\'ec\'edente, pour fournir un feedback de performance, pour l'auto-\'evaluation.
+\item[Question] Ensemble de 3 affirmations qui permettent d'obtenir 1 points quand les r\'eponses des 3 affirmations sont correctes.
+\item[]
+\end{enumerate}
+
+
+\end{document}

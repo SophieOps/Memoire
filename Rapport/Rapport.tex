@@ -1,0 +1,206 @@
+\documentclass[12pt, a4paper, oneside, titlepage]{book}%[a4paper, final]{report}{article}
+%%#################### PACKAGES DE BASE ####################################
+\usepackage[french,frenchb]{babel} %%adapte les règles typographique en fonction de la langue - sans option, choisit la langue en fonction de celle définie dans la classe du document
+\usepackage[T1]{fontenc} %-
+\usepackage[utf8]{inputenc}%-[latin1]{inputenc}
+%%#################### MISE EN PAGE #########################################
+\usepackage[fs]{umons-coverpage}
+\usepackage{fancyhdr} % Required for custom headers
+\usepackage{graphicx} % pour afficher, redimensionner des images
+\usepackage{lastpage} % pour pouvoir numéroter les pages << page xx sur 'lastpage'>>
+\usepackage{caption} %pour mettre les images dans la marge
+\usepackage{hyperref} % pour utiliser les liens hypertextes
+\usepackage{xcolor} % pour colorer le texte
+%\usepackage{extramarks} % Required for headers and footers
+%\usepackage{pifont} % pour les puces personnalisées/caractère spéciaux,...
+%\usepackage{enumitem} % pour d'autres puces
+%\usepackage{listings} % pour afficher du Code source
+%\usepackage[backend=biber]{biblatex} % pour la bibliographie
+%\addbibresource{biblio.bib} % pour la bibliographie
+%%#################### MATHS #########################################################
+\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{amssymb}
+%\usepackage{amsthm}
+%\usepackage{algorithm}
+%\usepackage{algorithmic}% pour include du pseudo code
+%%#################### TABLEAUX #######################################################
+\usepackage{array}                       %est entre autre nécessaire pour centrer un tableau
+%%#################### DIVERS (graphique, url, annexe, .eps, code) ####################
+%\usepackage{tikz} % arbres
+%\usetikzlibrary{arrows} pour définir des flèche dans les arbres
+%\usepackage{times}
+%\usepackage{rotate}
+%\usepackage{lscape}
+%\usepackage{verbatim}
+\usepackage{eurosym} % pour le symbole €
+%\usepackage{caption} % pour la position des images
+%\usepackage{float,caption} % pour la position des images
+%\usepackage{algpseudocode} % pour include du pseudo code
+%\usepackage{cite} %permet d'ordonner plusieurs références citées en même temps et de les afficher sous la forme d'un intervalle si elle se suivent
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\graphicspath{{Images/}} %pour l'emplacement des images
+\newcommand{\labelfigure}[1]{figure~\ref{#1} (page~\pageref{#1})}
+\newcommand{\annexe}[1]{annexe~\ref{#1} (page~\pageref{#1})}
+%\newcommand{\smalltitle}[1]{\bigskip\large\textbf{#1}\par\normalsize\medskip}
+
+
+
+%%#################### START CHANGE HERE ###################################
+\author{Sophie Opsommer}
+\title{Mémoire : }
+\umonsAuthor{\begin{tabular}{lll}
+\textsc{Opsommer} & Sophie & SOPHIE.OPSOMMER@student.umons.ac.be\\
+\end{tabular} }
+%% The main title of your thesis
+\umonsTitle{Mémoire : }
+%% The sub-title of your thesis
+\umonsSubtitle{Mémoire réalisé dans le cadre \\du Master en Sciences Informatiques, à finalité spécialisée}
+%Service : Neurosciences, Facult´e de M´edecine et de Pharmacie
+%% Your supervisor(s)
+\umonsSupervisor{\begin{tabular}{ll}
+\textit{Directeur} : & J. \textsc{Wijsen} \\
+%%\textit{Rapporteur} : & T. Mens\textsc{} \\
+\end{tabular}}
+%% The date (or academic year)
+\umonsDate {2018-2019}
+%%#################### END CHANGEMENT ##################################
+
+%%#################### SET UP THE HEADER AND FOOTER ####################
+\fancyhf{}
+\chead{\leftmark}
+%\rhead{\firstxmark} % Top right header
+%\cfoot{} % Bottom center footer
+\rfoot{Page \thepage\ sur \protect\pageref{LastPage}} % Bottom right footer
+\setlength{\headheight}{15pt}
+
+\begin{document}
+%%#################### Page de présentation (pour le secrétariat) 
+%###################### feuille volante à fournir en plus du mémoire :
+\thispagestyle{empty}
+\begin{center}
+\includegraphics[height=2cm]{UMONS-Logo.jpg}\\
+\textnormal{\Large{Faculté des Sciences}}\\
+\textnormal{\Large{Département d'Informatique}}
+\end{center}
+
+\vspace*{2cm}
+\begin{center}
+\fbox{
+\begin{minipage}{15cm}
+\center
+\vspace*{0.5cm}
+\textbf{\LARGE{Mémoire : }}\\[0.5em]
+\textbf{\LARGE{Base de donnée}}\\\vspace*{0.5cm}
+\end{minipage}
+}
+\end{center}
+
+\vspace*{2cm}
+\large{
+\begin{center}
+\begin{tabular*}{14cm}{@{\extracolsep{\fill}}lr}
+Directeurs : M\textsuperscript{r} Jef \textsc{Wijsen} & Projet réalisé par\\
+ & Sophie \textsc{Opsommer}\\[1em]
+Rapporteur :  & \\
+\end{tabular*}
+\end{center}}
+
+\vspace*{4cm}
+\begin{center}
+Année académique 2018-2019
+\end{center}
+\pagebreak
+
+\newpage
+\frontmatter % numérotation en chiffres romains
+
+%%#################### Page de couverture ####################(cf fichier umonscoverpage.sty)
+\thispagestyle{empty}
+\umonsCoverPage
+\pagebreak
+
+\newpage
+\thispagestyle{empty}
+\pagenumbering{roman}  %\pagenumbering{gobble}
+\vspace*{\stretch{1}}
+\chapter*{}
+%\begin{abstract}
+Ce \emph{rapport de projet} est rendu dans le cadre du cursus de \og Master en sciences informatiques, à finalité spécialisée \fg. Le but de ce rapport est de présenter le problème qui est posé, de développer l'analyse du problème et les choix réalisés ainsi que d'exposer la réalisation.
+%\end{abstract}
+\vspace*{\stretch{1}}
+
+\cleardoublepage
+\newpage
+%%#################### Acknoledge ####################
+%//Remerciements (facultatif) bon example dans le livre de référence musimoti
+\thispagestyle{empty}
+\vspace*{\stretch{1}}
+REMERCIEMENTS
+%Dès à présent, je voudrais remercier tous ceux qui m'ont aidé dans ce projet. Certains sont des professeurs, des experts ou alors des amis avec lesquels j'ai eu l'occasion de partager des discussions sur des points techniques ou pratiques. D'autres sont des membres de ma famille qui m'ont soutenu, montré de l'intér\^et pour le projet et/ou relu mes écrits, ...
+
+%Je pense en particulier au Professeur L. Ris du département de \emph{Médecine} de l'université qui a proposé ce sujet, m'a aidé à rédiger le cahier des charges en prenant le temps de m'expliquer point par point ce qu'elle souhaitait et qui à pris le temps à plusieurs reprises de tester les délivrables présentés et de me fournir des comptes-rendus constructifs et détaillés. Merci également au Professeur B. Quoitin pour son temps, sa patience et ses conseils tout au long du projet, à Benoit Debled, Danny Willems, Valentin Lecomte, Lucas Vanoverberghe, Jérémie Vincke et Dorian Opsommer pour les informations fournies, leur point de vue et leurs connaissances techniques et enfin, je tiens à remercier toutes les personnes qui m'ont conseillé et relu lors de la rédaction de ce rapport de projet.
+
+%Sans oublier Mr V. Boulanger du \emph{service informatique de l'UMONS} pour ses réponses, sa disponibilité et la mise à disposition du serveur ainsi que Dr S. Brognaux du service \emph{Administration et Valorisation de la Recherche (AVRE) de l'UMONS} pour son aide à déposer le projet sur les stores d'applications mobiles.
+% + Mr quoitin pour son Mac
+
+\vspace*{\stretch{1}}
+%%#################### TABLE OF CONTENTS ####################
+\newpage
+\thispagestyle{empty}
+\tableofcontents
+%N.B. : avec tocbibind il y aurait moyen d'ajouter les tableau dans la table des matières.
+      
+%%#################### LE RAPPORT COMMENCE ICI ####################
+\newpage
+\pagestyle{fancy}  % headings (nom du chapitre et le numéro de page en en-t\^ete), plain(numéro de page au milieu du pied de page), empty
+\mainmatter  % start of the contributions chapitre numéroté en chiffres
+\chapter{Introduction}\label{CHintro}
+...
+\vspace*{20mm}
+%Brève description du contenu chapitre par chapitre
+%Dans la suite de ce rapport seront présentés ... Enfin la conclusion contient le mot de la fin avec les améliorations possible et un avis personnel rétro-actif. 
+
+%Dans les annexes se trouvent la bibliographie, un glossaire des termes techniques utilisés et des suppléments informations pouvant étayer certaines parties du rapport.
+
+\cleardoublepage % permet de recommencer à écrire sur la page impaire (belle page) % bibitem : https://fr.wikibooks.org/wiki/LaTeX/Faire_des_tableaux
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Cahier des charges}\label{CHcharges}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%replace : 
+% 		\^{i}
+% 		\^{e}
+%  		\`{u}
+%  		è
+%  		à
+%  		é
+% \c{c}		\c{c}
+\end{document}
+
+
+
+
+
