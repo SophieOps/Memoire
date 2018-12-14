@@ -18,12 +18,17 @@
 %\usepackage[backend=biber]{biblatex} % pour la bibliographie
 %\addbibresource{biblio.bib} % pour la bibliographie
 %%#################### MATHS #########################################################
-\usepackage{amsmath}
 %\usepackage{amsfonts}
 %\usepackage{amssymb}
 %\usepackage{amsthm}
-%\usepackage{algorithm}
 %\usepackage{algorithmic}% pour include du pseudo code
+\usepackage{amsmath}
+\usepackage{algorithm}% pour include du pseudo code
+\usepackage[noend]{algpseudocode}% pour include du pseudo code
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
 %%#################### TABLEAUX #######################################################
 \usepackage{array}                       %est entre autre nécessaire pour centrer un tableau
 %%#################### DIVERS (graphique, url, annexe, .eps, code) ####################
@@ -33,13 +38,10 @@
 %\usepackage{rotate}
 %\usepackage{lscape}
 %\usepackage{verbatim}
-\usepackage{eurosym} % pour le symbole €
+%\usepackage{eurosym} % pour le symbole €
 %\usepackage{caption} % pour la position des images
 %\usepackage{float,caption} % pour la position des images
-%\usepackage{algpseudocode} % pour include du pseudo code
 %\usepackage{cite} %permet d'ordonner plusieurs références citées en même temps et de les afficher sous la forme d'un intervalle si elle se suivent
-\usepackage{algorithm}
-\usepackage{algpseudocode}
 
 \graphicspath{{Images/}} %pour l'emplacement des images
 \newcommand{\labelfigure}[1]{figure~\ref{#1} (page~\pageref{#1})}
@@ -168,7 +170,146 @@ REMERCIEMENTS
 \cleardoublepage % permet de recommencer à écrire sur la page impaire (belle page) % bibitem : https://fr.wikibooks.org/wiki/LaTeX/Faire_des_tableaux
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Contexte}\label{CHContexte}
+\chapter{Contexte}\label{CHcontexte}
+\`{A} l'heure où le monde collecte et enregistre de plus en plus de données et qu'il tente d'en tirer des conclusions et des prédictions, vérifier l'exactitude des informations devient aussi de plus en plus importante. Il existe beaucoup de critères à vérifier et beaucoup de méhodes pour y arriver.
+
+Interessons-nous à l'un d'entre eux : les dépendances fonctionelles.
+
+Une dépendance fonctioenlle est une relation entre plusieurs attributs d'une même table. Elle definit la valeur d'un attribut (ou d'un ensemble d'attributs) en fonction d'un autre ou de plusieurs autres attributs. En effet la dépendance fonctioennelle $X->Y$ définit que si plusieurs lignes ont les mêmes valeurs pour un ensemble $X$ d'attributs, elles auront également les mêmes valeurs pour l'ensemble $Y$ d'attributs.
+
+\begin{figure}[ht]
+	\center
+	\includegraphics{DF.png}
+	\caption{\label{picDF} Extrait d'une table pour illustrer des dépendances fonctionnelles}
+\end{figure}
+
+Par exemble, la table illustrée dans la figure \ref{picDF} pourrait exister dans une école. Elle illustre les différents professeurs, la classe (emplacement physique) où ils enseignent à un jour et une plage horraire précise ainsi que les élèves qui seront présent. Avec les lois spacio-temporrelle que nous connaissons, un professeurne ne peut se trouver que dans une classe à la fois. En terme de dépendance, à un jour de la semaine, une plage horaire et un professeur ne peut donc correspondre qu'une seule classe. Notons par contre que des élèves d'années différentes peuvent y assister en même temps. De la même façon, des élèves ne peuvent se trouver que dans une seule classe à la fois. Inversément, une classe n'est utilisée que par un professeur à la fois.
+Ces dépendances s'écrivent : \{Eleves, Jour, Heure -> Classe\}, \{Professeur, Jour, Heure -> Classe\}, \{Classe, Jour, Heure -> Professeur\}.
+
+Dans la pratique, il peut arriver que des dépendances ne sont pas respectées. Les causes sont multiples :
+\begin{itemize}
+\item Une erreur manuelle d'encodage ou de manipulation volontaire, 
+\item Une erreur manuelle d'encodage ou de manipulation involontaire, 
+\item Une source de données imprécise (par le biais d'internet, de capteurs avec des marges d'erreurs,...), 
+\item Une méthode de collecte imprécise (reconnaissance vocale, analyse de signaux, d'image,...)
+\item Un rappatriement de données prevenant de plusieurs sources avec des données différente ou avec des formats différents,
+\item Une mauvaise vérification au niveau applicatif,
+\item L'utilisation de plusieurs applications qui ne respectent pas toutes les mêmes règles et procédures,
+\item ...
+\end{itemize}
+
+Il est important de corriger la situation (et de trouver la méthode optimale pour y arriver) parce que la qualités des informations joue un rôle important dans la qualités du traitement des données ultérieurement. Comme le dit le jargon/proverbe : \og shit in, shit out \fg. ce qui revient à exprimer que si les données avec lesquelles on travaille ne sont pas credible, les conclusions que l'on pourra en tirer ne le seront pas non plus. En cas d'audit, ça permet aussi de calculer le degré ?d'inconsistence? de la table (on calculera la distance entre la base de données initiale et corrigée). 
+
+Pour remédier à ces erreurs, il faut d'une part remédier à la cause de ces incohérences mais aussi corriger les données qui sont incorrecte ou qui ont été corrompue. Pour la correction, il y a 2 solutions. Soit modifier les requêtes pour que celles-ci ne renvoient que les lignes non concernées par ces incohérences. Soit il faut trouver une base de données à l’image de la base de données existante qui, après un minimum de changements, respecte les contraintes d’intégrités. Pour cette dernière solution, deux possibllités existent également. On peut supprimer les données qui sont incorrecte ou on peut modifier les données incorrectes.
+
+Dans la suite, nous traiterons d'une méthode possible pour corriger les données existantes par le biais de la suppression des données incohérentes avec les dépendances fonctionnelles.
+
+\section{Notations}\label{SECnotations}
+Pour pouvoir transcrire le problème en notation mathématique, voici les raccourcis utilisés : 
+\begin{description}
+\item{$D$ : } la base de données source incohérente % elle peut être relationnelle, hierarchique, en réseau,... puisqu'on ne travaille que sur 1 table.
+\item{$D'$ : } image de D qui soit cohérente
+\item{$T$ : } table unique de la base de données D. Chaque ligne est numérotée par un identifiant qui ne sera jamais modifié. Il permet d'avoir un lien entre la version D et D' de la base. Elles sont aussi caractérisée par un poid qui détermine combien coûte la suppression de cette ligne. La table peut-être avec ou sans doublons et pondérée ou non. Si elle n'est pas pondérée, on fixera le même poids à toutes les lignes.
+\item{$T'$ : } image de T qui soit cohérente
+\item{$R$ ou $R(a_{1}, ... , a_{k})$ : } schéma relationnel de la table T où chaque $a_i$ est un attribut. Cette relation est un sous-ensemble du produit cartésien de plusieurs domaines de valeurs.
+\item{$Val$ : } domaine (infini?) de valeur d'attribut
+\item{$T[i]$ : } la ligne i de la table T
+\item{$T[*]$ : } toutes les lignes de T
+\item{$ids(T)$ : } identifiant de la ligne i de la table T ???
+\item{$Val^k$ : } domaine de valeur de l'attribut k. Il s'agit de l'ensemble des valeurs que l'attribut est succeptible de prendre.
+\item{$w_T(i)$ : } poids de la ligne i de la table T
+\item{$|T| = |ids(T)|$ : } le nombre de ligne de T
+\item{$t = (a_1, ..., a_k$ : } est une ligne de la table T
+\item{$t.A_j$ : } référence vers la valeur de $a_j$
+\item{$A, B,C,..., X, Y, Z$ : } Les premières lettres de l'alphabet illustrent un seulattribut à la fois alors que les dernières lettres de l'alphabet représententun ensemble d'attribut.
+\item{$\Delta$ : } ensemble des dépendances fonctionelles
+\item{$X -> Y$ : } expression d'une dépendance fonctionnelle où X et Y sont des séquences d'attribut
+\item{$lhs ou rhs$ : } \fg left/right hand side \og, on évoque la partie gauche/droite de la dépendance fonctionnelle.
+\item{$\Delta |= X -> Y$ : } la dépendance fonctionnelle est ?implique? dans $\Delta$. C'est-à-dire que si une table vérifie $\Delta$, elle vérifie aussi X -> Y
+\item{$Cl(\Delta)$ : } la fermeture de delta. Elle regroupe la liste exhaustive detoutes les dépendances fonctionnelle qui sont ?impliquée? par delta.
+\item{$Cl_\Delta(X)$ : }  la fermeture d’un attribut (ou d’une séquence d‘attribut) X. C’est la liste de tous les attributs A tel que X -> A est impliquée dans $\Delta$.
+\item{$\Delta1 = \Delta2$ : } si leurs fermetures sont identique.
+
+
+
+\item{ : } 
+\item{ : } 
+\item{ : } 
+\item{ : } 
+\item{ : } 
+\item{ : } 
+\item{ : } 
+\item{ : } 
+\item{ : } 
+\end{description}
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Sous-ensemble optimal}\label{CHsrepair}
+Pour obtenir une version de la base de données cohérente avec un minimum de suppression de ligne, l'article \cite{article} expose une solution. Les auteurs proposent un algorithme qui, sur base des dépendances fonctionnelles, prédit un problème polynomial ou APX-complet (sous-ensemble de la classe NP-difficile). Si le probème est de complexité polynomiale, alors une solution en un temps polynomial peut être trouver et ce, même si la table est lourde et/ou comporte des doublons. Dans le cas contraire, le problème ne peut qu'être approximé à une constante prêt.
+
+La méthode de correction évaluée tiendra compte du caractère optimal de la solution. Pour se faire elle calculera la distance entre la la base de donnée source et son image. Cette distance sera calculée en additionnant le poid des lignes supprimées.
+Dans l'exemple de la figure \ref{picDFnok}, supprimer la première ligne, sera plus coûteux que de supprimer les deux suivantes. Pour respecter les dépendances fonctionnelles suivante : \{ Facility -> City \} et \{ Facility, Room -> Floor \}, on supprimera donc les lignes 2 et 3 pour obtenir le sous-ensemble optimal.
+
+\begin{figure}[ht]
+	\center
+	\includegraphics{DFnok.png}
+	\caption{\label{picDFnok} Extrait d'une table pour illustrer des dépendances fonctionnelles particulières}
+\end{figure}
+
+
+\section{OSRSucceeds($\delta$)}
+
+Cet algorithme a été écrit pour prédire la complexité de la correction. Il va en effet travailler uniquement sur les dépendances fonctionnelles en ne tenant pas compte des données. Si l'algorithme est un succès, cela signifie qu'il aura réussi à simplifié les dépendances et à les substituée pour ne plus les traiter que une par une. Il est alors possible de lancer l'algorithme de correction des données qui mettra un temps polynomial à s'exécuter. Par contre si l'algorithme est un échec, alors il ne sera pas possible de corriger les données avec l'algorithme proposé dans un temps polynomial.
+
+Avant de présenterle pseudo code, voici quelques notion supplémentaires.
+
+\subsection{Un attribut commun à la main gauche : } 
+est un attribut « A » qui se trouve dans toutes les parties gauches des dépendances fonctionnelles de $\Delta$. Dans l'exemple de la figure \ref{picDFs}, l'attribut \fg Facility \og est donc un attribut commun à la main gauche. En présence de ce type d'attribut, trouver les données de la table initiale qui composeront la solution optimale reviendra à traité independamment les lignes en les groupant par la valeur de cet attribut et ensuite en faisant l'union des sous-ensembles.  De cette manière, pour chaque sous-ensemble, cet attribut n'a qu'une seule valeur et peut donc être supprimé dans les dépendances fonctionnelles.
+
+Dans l'exemple de la figure \ref{picDFnok} cela reviendrait a traiter d'une part les 3 premières lignes et d'autre part la dernière. Les dépendances deviennent donc : $\{ \emptyset -> City \} et \{  Room -> Floor \}$.
+
+\subsection{Un consensus : } 
+est une dépendance fonctionnelle dont la main gauche est vide : $\emptyset -> Y$. Cette dépendance fonctionnelle est respectée si la valeur du ou des attributs de Y est toujours identique. En présence de ce type d'attribut, trouver les données de la table initiale qui composeront la solution optimale reviendra à grouper les lignes avec la même valeur pour le ou les attributs $Y$ de la main droite de la dépendances. Ensuite plutôt que de faire l'union des sous-ensembles comme précédement, il conviendra de choisir l'un des sous-ensemble. Pour faire ce choix, il faut calculer la distance que la suppression de chacun des groupes impliquerait et prendre le groupe de ligne avec la distance la plus faible. Ensuite, la main droite de la dépendance étant identique pour toutes les lignes du sous-ensemble, cette dépendance peut être supprimée.
+
+Dans l'exemple de la figure \ref{picDFnok}, après avoir traité l'attribut commun, nous avons la dernière ligne qui respecte les contraintes et les trois autes pour qui il y a encore du travail. Traiter le consensus reviendrait à garder la première ligne ou les lignes 2 et 3. Si on garde la première ligne (et donc qu'on supprime les deux autres), la distance entre la table T initiale et la table image T' est $dist_{sub}(T, T') = 1+ 1 = 2$ or si ongarde les deux autres, la distance est de $dist_{sub}(T, T') = 3$. Garder la première ligne est donc la meilleure solution. Maintenant, $\Delta = \{  Room -> Floor \}$. Et notre sous-ensemble respecte cette dépendance donc le tour est joué.
+
+\subsection{Une chaîne : } 
+est une dépendance fonctionnelle qui en inclus une autre.
+....
+
+\subsection{ Un mariage : }
+est une situation où la table présente plusieurs identifiants. Chacun d'eux va alors déterminer le ou les autres identifiants. Par exemple $\Delta = \{  X -> Y \}, \{  Y -> X \}$. On dit que leur ""closure"" sont identiques. et il faut également que l'un deux soit présent dans chacune des autres dépendances, par exemple $\Delta = \{  X -> Y \}, \{  Y -> X \}, \{ X -> Z\}$.
++ complément video 0:8:00
+
+
+
+Voici le pseudo code de ce premier algorithme : 
+
+
+\begin{algorithm}
+\caption{OSRSucceeds}\label{euclid}
+\begin{algorithmic}[1]
+\Procedure{Simplify}{$\Delta$}
+\State $\textit{stringlen} \gets \text{length of }\textit{string}$
+\State $i \gets \textit{patlen}$
+\BState \emph{top}:
+\If {$i > \textit{stringlen}$} \Return false
+\EndIf
+\State $j \gets \textit{patlen}$
+\BState \emph{loop}:
+\If {$\textit{string}(i) = \textit{path}(j)$}
+\State $j \gets j-1$.
+\State $i \gets i-1$.
+\State \textbf{goto} \emph{loop}.
+\State \textbf{close};
+\EndIf
+\State $i \gets i+\max(\textit{delta}_1(\textit{string}(i)),\textit{delta}_2(j))$.
+\State \textbf{goto} \emph{top}.
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
 
 
 
@@ -186,18 +327,25 @@ REMERCIEMENTS
 
 
 
-
-
-
+\clearpage
+\appendix
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+\bibitem {video} \url{https://www.youtube.com/watch?v=dXoLmFDbq7E}, 30/11/2018.
+\bibitem {article} \textsc{Ester Livshits, Benny Kimelfeld, Sudeepa Roy}, \textit{ “Computing Optimal Repairs for Functional Dependencies”}, PODS. ACM, 2018, pp. 225–237.
+\bibitem {BDD1} \textsc{Josef Wijsen}, {Syllabus}
+\bibitem {article_} test
+\end{thebibliography}
 
 %replace : 
-% 		\^{i}
-% 		\^{e}
-%  		\`{u}
-%  		è
-%  		à
-%  		é
-% \c{c}		\c{c}
+%î 		\^{i}
+% ê		\^{e}
+% ù 		\`{u}
+% è		\`{e}
+% à		\`{a}
+% é		\'{e}
+% ç		\c{c}
+%delta	$\Delta$
 \end{document}
 
 
