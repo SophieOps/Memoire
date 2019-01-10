@@ -57,7 +57,7 @@
 \textsc{Opsommer} & Sophie & SOPHIE.OPSOMMER@student.umons.ac.be\\
 \end{tabular} }
 %% The main title of your thesis
-\umonsTitle{Mémoire : }
+\umonsTitle{Mémoire : Database Repairing with Respect to Functional Dependencies }
 %% The sub-title of your thesis
 \umonsSubtitle{Mémoire réalisé dans le cadre \\du Master en Sciences Informatiques, à finalité spécialisée}
 %Service : Neurosciences, Facult´e de M´edecine et de Pharmacie
@@ -95,7 +95,7 @@
 \center
 \vspace*{0.5cm}
 \textbf{\LARGE{Mémoire : }}\\[0.5em]
-\textbf{\LARGE{Base de donnée}}\\\vspace*{0.5cm}
+\textbf{\LARGE{Database Repairing with Respect to Functional Dependencies}}\\\vspace*{0.5cm}
 \end{minipage}
 }
 \end{center}
@@ -171,20 +171,11 @@ REMERCIEMENTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Contexte}\label{CHcontexte}
+(deviendra peut-être l'introduction)
+
 \`{A} l'heure où le monde collecte et enregistre de plus en plus de données et qu'il tente d'en tirer des conclusions et des prédictions, vérifier l'exactitude des informations devient aussi de plus en plus importante. Il existe beaucoup de critères à vérifier et beaucoup de méhodes pour y arriver.
 
 Interessons-nous à l'un d'entre eux : les dépendances fonctionelles.
-
-Une dépendance fonctioenlle est une relation entre plusieurs attributs d'une même table. Elle definit la valeur d'un attribut (ou d'un ensemble d'attributs) en fonction d'un autre ou de plusieurs autres attributs. En effet la dépendance fonctioennelle $X->Y$ définit que si plusieurs lignes ont les mêmes valeurs pour un ensemble $X$ d'attributs, elles auront également les mêmes valeurs pour l'ensemble $Y$ d'attributs.
-
-\begin{figure}[ht]
-	\center
-	\includegraphics{DF.png}
-	\caption{\label{picDF} Extrait d'une table pour illustrer des dépendances fonctionnelles}
-\end{figure}
-
-Par exemble, la table illustrée dans la figure \ref{picDF} pourrait exister dans une école. Elle illustre les différents professeurs, la classe (emplacement physique) où ils enseignent à un jour et une plage horraire précise ainsi que les élèves qui seront présent. Avec les lois spacio-temporrelle que nous connaissons, un professeurne ne peut se trouver que dans une classe à la fois. En terme de dépendance, à un jour de la semaine, une plage horaire et un professeur ne peut donc correspondre qu'une seule classe. Notons par contre que des élèves d'années différentes peuvent y assister en même temps. De la même façon, des élèves ne peuvent se trouver que dans une seule classe à la fois. Inversément, une classe n'est utilisée que par un professeur à la fois.
-Ces dépendances s'écrivent : \{Eleves, Jour, Heure -> Classe\}, \{Professeur, Jour, Heure -> Classe\}, \{Classe, Jour, Heure -> Professeur\}.
 
 Dans la pratique, il peut arriver que des dépendances ne sont pas respectées. Les causes sont multiples :
 \begin{itemize}
@@ -203,6 +194,124 @@ Il est important de corriger la situation (et de trouver la méthode optimale po
 Pour remédier à ces erreurs, il faut d'une part remédier à la cause de ces incohérences mais aussi corriger les données qui sont incorrecte ou qui ont été corrompue. Pour la correction, il y a 2 solutions. Soit modifier les requêtes pour que celles-ci ne renvoient que les lignes non concernées par ces incohérences. Soit il faut trouver une base de données à l’image de la base de données existante qui, après un minimum de changements, respecte les contraintes d’intégrités. Pour cette dernière solution, deux possibllités existent également. On peut supprimer les données qui sont incorrecte ou on peut modifier les données incorrectes.
 
 Dans la suite, nous traiterons d'une méthode possible pour corriger les données existantes par le biais de la suppression des données incohérentes avec les dépendances fonctionnelles.
+
+
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Notions de bases}\label{SECbase}
+Avant de rentrer dansle vif du sujet, voici un bref rappel de certaines notions de base. Toute personne habituée à travailler dans le domaine des bases de données peut alegrement passer cette section et passer à la suivante.
+
+
+\subsection{Une contrainte d'intégrité : } 
+Les contraintes d'intégrités sont les assertions qui doivent être vérifiées par les données contenues dans la base de données. Elles regroupe différentes catégories comme : 
+\begin{description}
+\item {les intégrités de domaine :} les valeurs d'un attribut doivent appartenir au domaine de valeurs de l'attribut.
+\item {les intégrités de clé :} les clés d'une tables sont uniques et non nulle.
+\item {les intégrités référentielle :} les clés étrangères sont nulles ou référence une clé primaine existante.
+\end{description}
+
+\subsection{Une dépendance fonctionnelle : }
+Une dépendance fonctioenlle est une contrainte sémantique. Elle est supposée toujours vrai dans le monde réel.
+
+C'est une relation entre plusieurs attributs d'une même table. Elle definit la valeur d'un attribut (ou d'un ensemble d'attributs) en fonction d'un autre ou de plusieurs autres attributs. En effet la dépendance fonctioennelle $ X \rightarrow Y$ définit que si plusieurs lignes ont les mêmes valeurs pour un ensemble $X$ d'attributs, elles auront également les mêmes valeurs pour l'ensemble $Y$ d'attributs.
+En terme de notation, soit la table de référence T définit par la relation $R{a_1, a_2, a_3,...,a_n}$ avec n le nombre d'attribut et X et Y des sous-ensemble de R. On dit que \fg Y dépend fonctionnellement de X \og ou \fg X détermine Y \og 0si à chaque valeur de X correspond une valeur unique de Y. On écrit alors \fg $ X \rightarrow Y$ \og.
+
+\begin{figure}[ht]
+	\center
+	\includegraphics{DF.png}
+	\caption{\label{picDF} Extrait d'une table pour illustrer des dépendances fonctionnelles}
+\end{figure}
+
+Par exemble, la table illustrée dans la figure \ref{picDF} pourrait exister dans une école. Elle illustre les différents professeurs, la classe (emplacement physique) où ils enseignent à un jour et une plage horraire précise ainsi que les élèves qui seront présent. Avec les lois spacio-temporrelle que nous connaissons, un professeur ne ne peut se trouver que dans une classe à la fois. En terme de dépendance, à un jour de la semaine, une plage horaire et un professeur ne peut donc correspondre qu'une seule classe. Notons par contre que des élèves d'années différentes peuvent y assister en même temps. Inversément, une classe n'est utilisée que par un professeur à la fois. De la même façon, des élèves ne peuvent se trouver que dans une seule classe à la fois
+Ces dépendances s'écrivent : $\{Eleves, Jour, Heure \rightarrow Classe\}, \{Professeur, Jour, Heure \rightarrow Classe\}, \{Classe, Jour, Heure \rightarrow Professeur\}$.
+
+\subsubsection{Une dépendance fonctionnelle élémentaire}
+Une dépendance fonctionnelle élémentairetel que $X \rightarrow A$ est un dépendance fonctionnelle où A est un attribut unique non inclus dans X et où il n’existe pas d'ensemble d'attribut X’ inclus dans X tel que $X’ \rightarrow A$.
+
+\subsubsection{Une clé (primaire)}
+Une clé est un attribut (ou un groupe minimum d'attributs) qui définit tous les autres attributs de la relation.
+
+\subsection{Une opération}
+Une opération est une manipulation qui est efectuée sur un ensemble de données pour obtenir un ou plusieurs nouvel ensemble de données.
+
+\subsubsection{L'union}
+L'union de deux relations R1 et R2 de même schéma est une relation R3 de schéma identique qui a pour n-uplets les n-uplets de R1 et/ou R2.
+On notera : $R3 = R1 \bigcup R2$
+
+\subsubsection{L'intersection}
+L’intersection entre deux relations R1 et R2 de même schéma est une relation R3 de schéma identique ayant pour n-uplets les n-uplets communs à R1 et R2.
+On notera : $R3 = R1 \bigcap R2$
+
+\subsubsection{La différence}
+La différence entre deux relations R1 et R2 de même schéma est une relation R3 de schéma identique ayant pour n-uplets les n-uplets de R1 n'appartenant pas à R2.
+On notera : $R3 = R1 -  R2$
+
+\subsubsection{La projection}
+La projection d'une relation R1 est la relation R2 obtenue en supprimant les attributs de R1 non mentionnés puis en éliminant éventuellement les n-uplets identiques.
+On notera : $R2 = \pi R1 (Ai, Aj, ... , Am)$ la projection d'une relation R1 sur les attributs $Ai, Aj, ... , Am$.
+Î
+ La projection permet d’éliminer des attributs d’une relation.  Elle correspond à un découpage vertical.
+
+\subsubsection{La restriction}
+La restriction d'une relation R1 est une relation R2 de même schéma n'ayant que les n-tuplets de R1 répondant ) la condition énoncée.
+On notera : $R3 = \sigma R1 (condition)$ la restriction d'une relation R1 suivant le critaire "condition" où "condition" est une relation d'égalité ou d'inégalité entre 2 attributs ou entre un attribut et une valeur.
+La restriction permet d'extraire les n-tuplets qui satisfont une condition. Elle correspond à un découpage horizontal.
+
+\subsubsection{La jointure}
+La jointure de deux relations R1 et R2 est une relation R3 dont les n-uplets sont obtenus en concaténant les n-uplets de R1 avec ceux de R2 et en ne gardant que ceux qui vérifient la condition de liaison.
+On notera : $R3 = R1 \ast  R2 (condition)$ la jointure de R1 avec R2 suivant le critère condition. Le schéma de la relation résultat de la jointure est la concaténation des schémas des opérandes (s'il y a des attributs de même nom, il faut les renommer).  Les n-uplets de $R1 \ast R2 (condition)$ sont tous les couples (u1,u2) d'un n-uplet de R1 avec un n-uplet de R2 qui satisfont "condition". La jointure de deux relations R1 et R2 est le produit cartésien des deux relations suivi d'une restriction. La condition de liaison doit être du type : <attribut1>  ::  <attribut2> où :  attribut1 $\in$ 1ère relation et attribut2 $\in$ 2ème relation :: est un opérateur de comparaison (égalité ou inégalité). La jointure permet de composer 2 relations à l'aide d'un critère de liaison.
+
+%Jointure naturelle : Jointure où l'opérateur de comparaison est l'égalité dans le résultat on fusionne les 2 colonnes dont les valeurs sont égales. La jointure permet d'enrichir une relation
+% La normalisation conduit à décomposer ; la jointure permet de recomposer.
+%Auto-jointure : jointure d'une relation par elle-même
+
+\subsubsection{La division}
+Soit deux relations R1 (A1, A2, ... , An, B1, B2, ... , Bm) et R2 (B1, B2, ... , Bm).
+Si le schéma de R2 est un sous-schéma de R1. La division de R1 par R2 est une relation R3 dont :
+-  le schéma est le sous-schéma complémentaire de R2 par rapport à R1
+-  un n-uplet (a1 , a2, ... , an) appartient à R3 si (a1, a2, ... , an, b1, b2, ... , bm) appartient à R1 pour tous (b1, b2, ... , bm) $\in$ R2.
+On notera : $R3 = R1 \div  R2$ la division de R1 par R2. La division permet de rechercher dans une relation les sous n-uplets qui sont complétés par tous ceux d'une autre relation. Elle permet de répondre à des questions qui sont formulées avec le quantificateur universel : "pour tout ...".
+
+\subsection{La fermeture transitive}
+La fermeture transitive permet d'enrichir une relation à 2 attributs de même domaine, avec tous les couples qui se déduisent par transitivité.
+
+Soit par exemple, 2 attributs A et B qui ont pour domaine les chiffres.
+Soit une table définie par la relation R(A,B) qui contient les données (1, 2) et (2, 3). La fermeture de cet ensemble est composée de (1, 2) et (2, 3) et (1, 3).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%ù
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Notions complémentaires}\label{SECcomplement}
+Ici seront détaillés des notions propre à ce travail qui ne seront peut-être pas commun aux standarts de notations habituels. Il estdonc important de les comprendre avant de poursuivre la suite de la lecture.
+
+\subsection{Un attribut commun à la main gauche : } 
+est un attribut « A » qui se trouve dans toutes les parties gauches des dépendances fonctionnelles de $\Delta$. Dans l'exemple de la figure \ref{picDFs}, l'attribut \fg Facility \og est donc un attribut commun à la main gauche. En présence de ce type d'attribut, trouver les données de la table initiale qui composeront la solution optimale reviendra à traité independamment les lignes en les groupant par la valeur de cet attribut et ensuite en faisant l'union des sous-ensembles.  De cette manière, pour chaque sous-ensemble, cet attribut n'a qu'une seule valeur et peut donc être supprimé dans les dépendances fonctionnelles.
+
+Dans l'exemple de la figure \ref{picDFnok} cela reviendrait a traiter d'une part les 3 premières lignes et d'autre part la dernière. Les dépendances deviennent donc : $\{ \emptyset \rightarrow City \} et \{  Room \rightarrow Floor \}$.
+
+\subsection{Un consensus : } 
+est une dépendance fonctionnelle dont la main gauche est vide : $\emptyset \rightarrow Y$. Cette dépendance fonctionnelle est respectée si la valeur du ou des attributs de Y est toujours identique. En présence de ce type d'attribut, trouver les données de la table initiale qui composeront la solution optimale reviendra à grouper les lignes avec la même valeur pour le ou les attributs $Y$ de la main droite de la dépendances. Ensuite plutôt que de faire l'union des sous-ensembles comme précédement, il conviendra de choisir l'un des sous-ensemble. Pour faire ce choix, il faut calculer la distance que la suppression de chacun des groupes impliquerait et prendre le groupe de ligne avec la distance la plus faible. Ensuite, la main droite de la dépendance étant identique pour toutes les lignes du sous-ensemble, cette dépendance peut être supprimée.
+
+Dans l'exemple de la figure \ref{picDFnok}, après avoir traité l'attribut commun, nous avons la dernière ligne qui respecte les contraintes et les trois autes pour qui il y a encore du travail. Traiter le consensus reviendrait à garder la première ligne ou les lignes 2 et 3. Si on garde la première ligne (et donc qu'on supprime les deux autres), la distance entre la table T initiale et la table image T' est $dist_{sub}(T, T') = 1+ 1 = 2$ or si ongarde les deux autres, la distance est de $dist_{sub}(T, T') = 3$. Garder la première ligne est donc la meilleure solution. Maintenant, $\Delta = \{  Room \rightarrow Floor \}$. Et notre sous-ensemble respecte cette dépendance donc le tour est joué.
+
+\subsection{Une chaîne : } 
+est une dépendance fonctionnelle qui en inclus une autre.
+....
+
+\subsection{ Un mariage : }
+est une situation où la table présente plusieurs identifiants. Chacun d'eux va alors déterminer le ou les autres identifiants. Par exemple $\Delta = \{  X \rightarrow Y \}, \{  Y \rightarrow X \}$. On dit que leur ""closure"" sont identiques. et il faut également que l'un deux soit présent dans chacune des autres dépendances, par exemple $\Delta = \{  X \rightarrow Y \}, \{  Y \rightarrow X \}, \{ X \rightarrow Z\}$.
++ complément video 0:8:00
+
+
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Notations}\label{SECnotations}
 Pour pouvoir transcrire le problème en notation mathématique, voici les raccourcis utilisés : 
@@ -223,11 +332,11 @@ Pour pouvoir transcrire le problème en notation mathématique, voici les raccou
 \item{$t.A_j$ : } référence vers la valeur de $a_j$
 \item{$A, B,C,..., X, Y, Z$ : } Les premières lettres de l'alphabet illustrent un seulattribut à la fois alors que les dernières lettres de l'alphabet représententun ensemble d'attribut.
 \item{$\Delta$ : } ensemble des dépendances fonctionelles
-\item{$X -> Y$ : } expression d'une dépendance fonctionnelle où X et Y sont des séquences d'attribut
+\item{$X \rightarrow Y$ : } expression d'une dépendance fonctionnelle où X et Y sont des séquences d'attribut
 \item{$lhs ou rhs$ : } \fg left/right hand side \og, on évoque la partie gauche/droite de la dépendance fonctionnelle.
-\item{$\Delta |= X -> Y$ : } la dépendance fonctionnelle est ?implique? dans $\Delta$. C'est-à-dire que si une table vérifie $\Delta$, elle vérifie aussi X -> Y
+\item{$\Delta |= X \rightarrow Y$ : } la dépendance fonctionnelle est ?implique? dans $\Delta$. C'est-à-dire que si une table vérifie $\Delta$, elle vérifie aussi $X \rightarrow Y$.
 \item{$Cl(\Delta)$ : } la fermeture de delta. Elle regroupe la liste exhaustive detoutes les dépendances fonctionnelle qui sont ?impliquée? par delta.
-\item{$Cl_\Delta(X)$ : }  la fermeture d’un attribut (ou d’une séquence d‘attribut) X. C’est la liste de tous les attributs A tel que X -> A est impliquée dans $\Delta$.
+\item{$Cl_\Delta(X)$ : }  la fermeture d’un attribut (ou d’une séquence d‘attribut) X. C’est la liste de tous les attributs A tel que $X \rightarrow A$ est impliquée dans $\Delta$.
 \item{$\Delta1 = \Delta2$ : } si leurs fermetures sont identique.
 
 
@@ -242,7 +351,7 @@ Pour pouvoir transcrire le problème en notation mathématique, voici les raccou
 \item{ : } 
 \item{ : } 
 \end{description}
-
+...
 \clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -250,7 +359,7 @@ Pour pouvoir transcrire le problème en notation mathématique, voici les raccou
 Pour obtenir une version de la base de données cohérente avec un minimum de suppression de ligne, l'article \cite{article} expose une solution. Les auteurs proposent un algorithme qui, sur base des dépendances fonctionnelles, prédit un problème polynomial ou APX-complet (sous-ensemble de la classe NP-difficile). Si le probème est de complexité polynomiale, alors une solution en un temps polynomial peut être trouver et ce, même si la table est lourde et/ou comporte des doublons. Dans le cas contraire, le problème ne peut qu'être approximé à une constante prêt.
 
 La méthode de correction évaluée tiendra compte du caractère optimal de la solution. Pour se faire elle calculera la distance entre la la base de donnée source et son image. Cette distance sera calculée en additionnant le poid des lignes supprimées.
-Dans l'exemple de la figure \ref{picDFnok}, supprimer la première ligne, sera plus coûteux que de supprimer les deux suivantes. Pour respecter les dépendances fonctionnelles suivante : \{ Facility -> City \} et \{ Facility, Room -> Floor \}, on supprimera donc les lignes 2 et 3 pour obtenir le sous-ensemble optimal.
+Dans l'exemple de la figure \ref{picDFnok}, supprimer la première ligne, sera plus coûteux que de supprimer les deux suivantes. Pour respecter les dépendances fonctionnelles suivante : $\{ Facility \rightarrow City \} et \{ Facility, Room \rightarrow Floor \}$, on supprimera donc les lignes 2 et 3 pour obtenir le sous-ensemble optimal.
 
 \begin{figure}[ht]
 	\center
@@ -263,30 +372,26 @@ Dans l'exemple de la figure \ref{picDFnok}, supprimer la première ligne, sera p
 
 Cet algorithme a été écrit pour prédire la complexité de la correction. Il va en effet travailler uniquement sur les dépendances fonctionnelles en ne tenant pas compte des données. Si l'algorithme est un succès, cela signifie qu'il aura réussi à simplifié les dépendances et à les substituée pour ne plus les traiter que une par une. Il est alors possible de lancer l'algorithme de correction des données qui mettra un temps polynomial à s'exécuter. Par contre si l'algorithme est un échec, alors il ne sera pas possible de corriger les données avec l'algorithme proposé dans un temps polynomial.
 
-Avant de présenterle pseudo code, voici quelques notion supplémentaires.
-
-\subsection{Un attribut commun à la main gauche : } 
-est un attribut « A » qui se trouve dans toutes les parties gauches des dépendances fonctionnelles de $\Delta$. Dans l'exemple de la figure \ref{picDFs}, l'attribut \fg Facility \og est donc un attribut commun à la main gauche. En présence de ce type d'attribut, trouver les données de la table initiale qui composeront la solution optimale reviendra à traité independamment les lignes en les groupant par la valeur de cet attribut et ensuite en faisant l'union des sous-ensembles.  De cette manière, pour chaque sous-ensemble, cet attribut n'a qu'une seule valeur et peut donc être supprimé dans les dépendances fonctionnelles.
-
-Dans l'exemple de la figure \ref{picDFnok} cela reviendrait a traiter d'une part les 3 premières lignes et d'autre part la dernière. Les dépendances deviennent donc : $\{ \emptyset -> City \} et \{  Room -> Floor \}$.
-
-\subsection{Un consensus : } 
-est une dépendance fonctionnelle dont la main gauche est vide : $\emptyset -> Y$. Cette dépendance fonctionnelle est respectée si la valeur du ou des attributs de Y est toujours identique. En présence de ce type d'attribut, trouver les données de la table initiale qui composeront la solution optimale reviendra à grouper les lignes avec la même valeur pour le ou les attributs $Y$ de la main droite de la dépendances. Ensuite plutôt que de faire l'union des sous-ensembles comme précédement, il conviendra de choisir l'un des sous-ensemble. Pour faire ce choix, il faut calculer la distance que la suppression de chacun des groupes impliquerait et prendre le groupe de ligne avec la distance la plus faible. Ensuite, la main droite de la dépendance étant identique pour toutes les lignes du sous-ensemble, cette dépendance peut être supprimée.
-
-Dans l'exemple de la figure \ref{picDFnok}, après avoir traité l'attribut commun, nous avons la dernière ligne qui respecte les contraintes et les trois autes pour qui il y a encore du travail. Traiter le consensus reviendrait à garder la première ligne ou les lignes 2 et 3. Si on garde la première ligne (et donc qu'on supprime les deux autres), la distance entre la table T initiale et la table image T' est $dist_{sub}(T, T') = 1+ 1 = 2$ or si ongarde les deux autres, la distance est de $dist_{sub}(T, T') = 3$. Garder la première ligne est donc la meilleure solution. Maintenant, $\Delta = \{  Room -> Floor \}$. Et notre sous-ensemble respecte cette dépendance donc le tour est joué.
-
-\subsection{Une chaîne : } 
-est une dépendance fonctionnelle qui en inclus une autre.
-....
-
-\subsection{ Un mariage : }
-est une situation où la table présente plusieurs identifiants. Chacun d'eux va alors déterminer le ou les autres identifiants. Par exemple $\Delta = \{  X -> Y \}, \{  Y -> X \}$. On dit que leur ""closure"" sont identiques. et il faut également que l'un deux soit présent dans chacune des autres dépendances, par exemple $\Delta = \{  X -> Y \}, \{  Y -> X \}, \{ X -> Z\}$.
-+ complément video 0:8:00
-
-
-
 Voici le pseudo code de ce premier algorithme : 
+\begin{algorithm}
+\caption{OSRSucceeds}\label{euclid}
+\begin{algorithmic}[1]
 
+\BState $\emph{while} \Delta is nontrivial \emph{do} :$
+\State $remove trivial FDs from \Delta$
+\If $\Delta has a common lhs A then$
+\State $\Delta := \Delta - A$
+else if $\Delta has a consensus FD \emptyset \rightarrow A then$
+\State $\Delta := \Delta - A$
+else if $\Delta has an lhs marriage (X1,X2) then$
+\State $\Delta := \Delta - X1X2$
+else
+\State $\textbf{return} false$
+\EndIf
+\State $\textbf{return} true$
+
+\end{algorithmic}
+\end{algorithm}
 
 \begin{algorithm}
 \caption{OSRSucceeds}\label{euclid}
@@ -312,10 +417,54 @@ Voici le pseudo code de ce premier algorithme :
 \end{algorithm}
 
 
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{OptSRepair($\Delta, T$)}
+...
+$
+1: if \Delta is trivial then \% successful termination
+2: return T
+3: remove trivial FDs from \Delta
+4: if \Delta has a common lhs then
+5: return CommonLHSRep(\Delta,T )
+6: if \Delta has a consensus FD then
+7: return ConsensusRep(\Delta,T )
+8: if \Delta has an lhs marriage then
+9: return MarriageRep(\Delta,T )
+10: fail \% cannot find an optimal S-repair
+$
 
+\section{CommonLHSRep($\Delta, T$)}
+...
+$
+1: A := a common lhs of \Delta
+2: return \cup_{(a)\in \pi_{A}T[*]}OptSRepair(\sigma_{A=a}T, \Delta - A)
+$
 
+\section{ConsensusRep($\Delta, T$)}
+...
+$
+1: select a consensus FD \emptyset \rightarrow  A in \Delta
+2: for all a \in \pi_A T [*] do
+3: S_a := OptSRepair(\sigma_{A=a}T, \Delta - A)
+4: a_{max} := argmax_a \{w_T (S_a ) | (a) \in  \sigma_A T [*]\}
+5: return S_{a_{max}}
+$
 
-
+\section{MarriageRep($\Delta$, T)}
+...
+$
+1: select an lhs marriage (X_1, X_2) of \Delta
+2: for all (a_1, a_2) \in  \pi{X_1 X_2} T [*] do
+3: S_{a_1, a_2} := OptSRepair(\sigma_{X_1 = a_1, X_2 = a_2}T, \Delta - X_1 X_2)
+4: w(a_1, a_2) := w_T (S_{a_1,a_2} )
+5: V_i := \pi_{X_i}T [*] for i = 1, 2
+6: E := \{(a_1, a_2) | (a_1, a_2) \in  \pi_{X_1 X_2}T [*]\}
+7: G := weighted bipartite graph (V_1,V_2, E,w)
+8: E_{max} := a maximum matching of G
+9: return \cup_{(a_1, a_2 )\in E_{max}}S_{a_1, a_2}
+$
 
 
 
@@ -328,13 +477,15 @@ Voici le pseudo code de ce premier algorithme :
 
 
 \clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \appendix
 \bibliographystyle{plain}
 \begin{thebibliography}{9}
 \bibitem {video} \url{https://www.youtube.com/watch?v=dXoLmFDbq7E}, 30/11/2018.
 \bibitem {article} \textsc{Ester Livshits, Benny Kimelfeld, Sudeepa Roy}, \textit{ “Computing Optimal Repairs for Functional Dependencies”}, PODS. ACM, 2018, pp. 225–237.
 \bibitem {BDD1} \textsc{Josef Wijsen}, {Syllabus}
-\bibitem {article_} test
+\bibitem {coursNice} \url{https://www.i3s.unice.fr/~nlt/cours/licence/sgbd1/sgbd1_cours.pdf}, 15/12/2018.
 \end{thebibliography}
 
 %replace : 
