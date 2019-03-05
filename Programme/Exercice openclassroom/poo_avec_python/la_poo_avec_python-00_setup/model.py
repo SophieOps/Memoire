@@ -2,41 +2,35 @@
 def cities(country, *cities):
     print(country, cities)
     print("Type is ", type(cities))
-
-cities("France")
-# France ()
-# Type is  <class 'tuple'>
-
-cities("France", "Paris", "Mollégès", "Bourg la Reine")
+cities("France", "Paris", "Mollégès", "Bourg la Reine") # peux aussi ne recevoir aucun rgument : cities("France")
 # France ('Paris', 'Mollégès', 'Bourg la Reine')
 # Type is  <class 'tuple'>
 
 def list_songs(**songs):
     print(songs)
     print("Type is ", type(songs))
-
-list_songs()
-# {}
-# Type is  <class 'dict'>
-
 list_songs(adele_songs = ["Hello", "Someone like you"], backstreet_boys_songs = ["Larger than life", "I want it that way"])
 # {'adele_songs': ['Hello', 'Someone like you'], 'backstreet_boys_songs': ['Larger than life', 'I want it that way']}
 # Type is  <class 'dict'>
 
 
-class Agent:
-    def __init__(self, agent_attributes):
-        #self.agreeableness = agent_attributes['agreeableness']
-        #print(agent_attributes.items())
+class Agent:    
+    def __init__(self, **agent_attributes):
+        #pour lire toutes les clés d'un dictionnaire
         for attr_name, attr_value in agent_attributes.items():
             setattr(self, attr_name, attr_value)
-        
+    #def __init__(self, agent_attributes):
+        ##self.agreeableness = agent_attributes['agreeableness']
+        ##print(agent_attributes.items())
+        #for attr_name, attr_value in agent_attributes.items():
+            #setattr(self, attr_name, attr_value)
+    #def __init__(self, agreeableness):
+        #self.agreeableness = agreeableness
+       
     def say_hello(self, first_name):
         return "Bien le bonjour " + first_name + "!"
     
 
-    #def __init__(self, agreeableness):
-        #self.agreeableness = agreeableness
 
 
 
@@ -61,8 +55,9 @@ agent_attributes = {"neuroticism": -0.0739192627121713,
 
 
 
+agent = Agent(**agent_attributes)
+#agent = Agent(agent_attributes)
 #agent = Agent(0)
-agent = Agent(agent_attributes)
 print(agent)
 print(agent.say_hello("Sophie"))
 print(agent.agreeableness)
