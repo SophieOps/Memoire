@@ -65,13 +65,13 @@ def RemoveTrivialDF(delta):
         include = False
         for dhs in df[1]:
             for lhs in df[0]:
-                
+                pass
             
     #print(deltaOne)
                    
 #test si la complexité de la situation des DFs
 def OSRSucceeds(delta):
-    while delta is nontrivial:
+    """while delta is nontrivial:
         delta = RemoveTrivialDF(delta)
         if delta has a common lhs A then
             delta := delta − A
@@ -80,7 +80,7 @@ def OSRSucceeds(delta):
         else if delta has an lhs marriage (X1,X2) then
             delta := delta − X1X2
         else
-            return False
+            return False"""
     return True
 
 #définition de la méthode main
