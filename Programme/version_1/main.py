@@ -3,7 +3,7 @@
 #création d'une liste de liste de dépendances fonctionelles de test
 def createDF():
     df = []
-    cas = 5
+    cas = 1
     if cas == 0:
         for i in range(0,10):
             df.append([["A", "B"] , ["C",]])
@@ -187,23 +187,54 @@ def createMaetaData():
 #common lhs c-à-d un attribut présent toutes les lhs de toutes les df.
 def CommonLHSRep(delta, data, meta, attribut):
     """return ∪(a)∈πAT [∗]OptSRepair(σA=aT, Δ − A)"""
-    """dictionnaire = {}
-    for ligne in data
-    if dictionnaire.has_key()
-    for cle in fiche.keys():
-...     print cle"""
-    return data
+    listeSegm = {}
+    index = meta.index(attribut)
+    """Je fais le listing de mes valeurs différentes pour cet attribut
+       Je regarde si la valeur existe en cherchant son index. Si pas, je l'ajoute"""
+    for ligne in data:
+        if not dictionnaire.has_key(ligne[index]):
+            listeSegm[ligne[index]]=[]
+        listeSegm[ligne[index]].append(ligne)
+    
+    result=[]
+    """Pour chacunes de ces valeurs je retrouve les lignes qui possedent cette valeur et je les mets dans une liste Temporaire"""
+    for segment in listeSegm.values():      
+        """J'envoie cette liste temporaire dans OptSrepair et je compare la sousListe retournée avec mes résultats de mes précédents attributs sur base de la somme des poids"""
+        sousListe = OptSRepair(delta, segment, meta)
+        """if sousListe == False ???"""
+        for ligne in sousListe:
+            poids += ligne[len(ligne)-1]
+        if poids > poidsMax:
+            result=sousListe
+            poidsMax = poids
+    
+    return result
     
 #3 - ConsensusRep :Dans ce cas on regroupe toutes les lignes en fonction de la valeur de l'attribut de la main droite A. Ensuite, on fait un appel récursif à OptSRepair pour chaque sous-ensemble avec les DFs sans l'attribut A et on sélectionne le sous ensemle avec le poid maximal.
 #consensus c-à-d que lhs est vide et donc les valeurs des attributs de Y sont tous les mêmes
 def ConsensusRep(delta, data, meta, attribut):
-    """for all a ∈ πAT [∗] do
-3: Sa := OptSRepair(σA=aT, Δ − A)
-4: amax := argmax
-a
-{wT (Sa ) | (a) ∈ πAT [∗]}
-5: return Samax"""
-    return data
+    index = meta.index(attribut)
+    listeSegm = {}
+    """Je fais le listing de mes valeurs différentes pour cet attribut"""
+    for ligne in data:
+        if not ligne[index] in listeSegm.keys():
+            listeSegm[ligne[index]]=[]
+        listeSegm[ligne[index]].append(ligne)
+        
+    result=[]
+    poidsMax=0
+    """Je lance le traitement de chachun de ces sous tableaux et je garde le retour de celui qui possède une somme de poids le plus élevé"""
+    for segment in listeSegm.values():
+        sousListe = OptSRepair(delta, segment, meta)
+        """traitemant si sousListe == False ??? """
+        poids=0
+        for ligne in sousListe:
+            poids += ligne[len(ligne)-1]
+        if poids > poidsMax:
+            result=sousListe
+            poidsMax = poids
+    
+    return result
 
 #4 - MarriageRep:Dans ce cas on trouve la correspondance de poid maximum du graph pibartite.
 #lhs mariage (X1,X2) c-à-d être en présence de la situation suivante : X->Y et Y ->X et que X ou Y soit présent dans toutes les autres dfs
