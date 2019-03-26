@@ -1,9 +1,8 @@
 # coding: utf-8
 
 #création d'une liste de liste de dépendances fonctionelles de test
-def createDF():
+def createDF(cas):
     df = []
-    cas = 1
     if cas == 0:
         for i in range(0,10):
             df.append([["A", "B"] , ["C",]])
@@ -60,7 +59,7 @@ def OneToRHS(delta):
     deltaOne = []
     if IsDFNotEmpty(delta):
         for df in delta:
-            print(len(df[1]))
+            #print(len(df[1]))
             if len(df[1]) == 1:
                    deltaOne.append([df[0], df[1][0]])
             else:
@@ -73,8 +72,8 @@ def OneToRHS(delta):
 def RemoveTrivialDF(delta):
     for df in delta:
         if df[1] in df[0]:#df[1] est un attribut seul MAIS df[0] est une liste d'attribut
+            print("On supprime la dépendance fonctionnelle : "+str(df))
             delta.remove(df)                    
-    print(delta)
     return delta
 
 #2 - On veut savoir si il existe un "Common LHS" et lequel
@@ -99,7 +98,9 @@ def RemoveAtt(delta, att):
         if att == df[1]:
             delta.remove(df)
         elif len(df[0]) == 1:
+            #print("La suppression d'un attribut met à null sa main gauche : "+str(df))
             df[0] = None
+            #print("Modification effectuée : "+str(df))
         else:
             df[0].remove(att)
     return delta
@@ -129,8 +130,8 @@ def MarriageAtt(delta):
             return [lhs, val]
     return ""
         
-#test si la complexité de la situation des DFs
 def OSRSucceeds(delta):
+    """determine if the resolution is polynomial or not"""
     while IsDFNotEmpty(delta):
     #if IsDFNotEmpty(delta):
         attributCommun = CommonLHSAtt(delta)
@@ -143,7 +144,7 @@ def OSRSucceeds(delta):
             print("attributConsensus : "+attributConsensus)
             if attributConsensus != "":
                 delta = RemoveAtt(delta, attributConsensus)
-                print("L'attribut <<"+attributConsensus+">> a été trouvé dans un consensus et supprimédans delta")
+                print("L'attribut <<"+attributConsensus+">> a été trouvé dans un consensus et supprimé dans delta")
             else:
                 attributMariage = MarriageAtt(delta)
                 print("attributMariage = "+attributMariage)
@@ -155,16 +156,14 @@ def OSRSucceeds(delta):
         print(delta)
     return True
 
-#création d'une liste de tuples de test
-#N.B. les tuples sont les listes qui ne peuvent pas être modifiées
-def createData():
+def createData(cas):
+    """Return a list of tuples"""
+    #N.B. les tuples sont les listes qui ne peuvent pas être modifiées
     data = []
-    cas = 1
     if cas == 0:
         for i in range(0,10):
             data.append(("id", "bjr" , "numero",str(i), "weight"))
     if cas == 1:
-        #id - facility - room - floor - city - weight
         data.append((1, "HQ", 322, 3, "Paris", 3))
         data.append((2, "HQ", 322, 30, "Madrid", 1))
         data.append((3, "HQ", 122, 1, "Madrid", 1))
@@ -172,45 +171,55 @@ def createData():
     #print(data)
     return data
 
-#création d'une liste de correspondance entre les noms des colonnes et leur index
-def createMaetaData():
+def createMetaData(cas):
+    """Return a list with the name of each attribute in the same order that they are present in the physical table"""
     meta = []
-    cas = 1
     if cas == 0:
-        meta.append("id", "str" , "num","val", "weight")
-    if cas == 1:
-        meta.append("id", "facility", "room", "floor", "city", "weight")        
+        meta.extend(("id", "str" , "num","val", "weight"))
+    if cas == 1:#id - facility - room - floor - city - weight
+        meta.extend(("I", "A", "R", "F", "C", "W"))
+    if cas == 2:
+        meta.extend(("I", "A", "B", "W"))
+    if cas == 3:
+        meta.extend(("I", "S", "F", "L", "A", "O", "P", "B", "W"))
+    if cas == 4:
+        meta.extend(("I", "A", "B", "W"))
+    if cas == 5:
+        meta.extend(("I", "A", "B", "C", "D", "W"))
+    if cas == 6:
+        meta.extend(("I", "A", "B", "W"))
+    if cas == 7:
+        meta.extend(("I", "W"))        
     #print(meta)
     return meta
 
-#2 - CommonLHSRep :Dans ce cas on regroupe toutes les lignes en fonction de la valeur de l'attribut commun A. Ensuite, on fait un appel récursif à OptSRepair pour chaque sous-ensemble avec les DFs sans l'attribut A et on fait l'union des opt sous S repair.
+#2 - CommonLHSRep :Dans ce cas on regroupe toutes les lignes en fonction de la valeur de l'attribut commun A.
+#Ensuite, on fait un appel récursif à OptSRepair pour chaque sous-ensemble avec les DFs sans l'attribut A et on fait l'union des opt sous S repair.
 #common lhs c-à-d un attribut présent toutes les lhs de toutes les df.
 def CommonLHSRep(delta, data, meta, attribut):
-    """return ∪(a)∈πAT [∗]OptSRepair(σA=aT, Δ − A)"""
+    """Return ∪(a)∈πAT [∗]OptSRepair(σA=aT, Δ − A)"""
     listeSegm = {}
     index = meta.index(attribut)
     """Je fais le listing de mes valeurs différentes pour cet attribut
        Je regarde si la valeur existe en cherchant son index. Si pas, je l'ajoute"""
     for ligne in data:
-        if not dictionnaire.has_key(ligne[index]):
+        if not ligne[index] in listeSegm.keys():
             listeSegm[ligne[index]]=[]
         listeSegm[ligne[index]].append(ligne)
     
     result=[]
-    """Pour chacunes de ces valeurs je retrouve les lignes qui possedent cette valeur et je les mets dans une liste Temporaire"""
+    """Pour chacunes de ces listes de lignes avec la même valeur,"""
     for segment in listeSegm.values():      
-        """J'envoie cette liste temporaire dans OptSrepair et je compare la sousListe retournée avec mes résultats de mes précédents attributs sur base de la somme des poids"""
+        """J'envoie cette liste temporaire dans OptSrepair """
         sousListe = OptSRepair(delta, segment, meta)
         """if sousListe == False ???"""
-        for ligne in sousListe:
-            poids += ligne[len(ligne)-1]
-        if poids > poidsMax:
-            result=sousListe
-            poidsMax = poids
-    
+        """Je fais l'union des listes retournées"""
+        result.extend(sousListe)
     return result
     
-#3 - ConsensusRep :Dans ce cas on regroupe toutes les lignes en fonction de la valeur de l'attribut de la main droite A. Ensuite, on fait un appel récursif à OptSRepair pour chaque sous-ensemble avec les DFs sans l'attribut A et on sélectionne le sous ensemle avec le poid maximal.
+#3 - ConsensusRep :Dans ce cas on regroupe toutes les lignes en fonction de la valeur de l'attribut de la main droite A.
+#Ensuite, on fait un appel récursif à OptSRepair pour chaque sous-ensemble avec les DFs sans l'attribut A
+#et on sélectionne le sous ensemle avec le poid maximal.
 #consensus c-à-d que lhs est vide et donc les valeurs des attributs de Y sont tous les mêmes
 def ConsensusRep(delta, data, meta, attribut):
     index = meta.index(attribut)
@@ -232,8 +241,7 @@ def ConsensusRep(delta, data, meta, attribut):
             poids += ligne[len(ligne)-1]
         if poids > poidsMax:
             result=sousListe
-            poidsMax = poids
-    
+            poidsMax = poids    
     return result
 
 #4 - MarriageRep:Dans ce cas on trouve la correspondance de poid maximum du graph pibartite.
@@ -252,7 +260,12 @@ def MarriageRep(delta, data, meta, attributs):
     
 #résulution avec les données
 def OptSRepair(delta, data, meta):
-    if IsDFNotEmpty(delta):
+    #TODO : retirer les DFs triviales : RemoveTrivialDF
+    print(delta)
+    print(data)
+    print(meta)
+    if not IsDFNotEmpty(delta):
+        print("Le delta est vide")
         return data
     attributCommun = CommonLHSAtt(delta)
     print("attributCommun : "+attributCommun)
@@ -267,7 +280,7 @@ def OptSRepair(delta, data, meta):
         print("L'attribut <<"+attributConsensus+">> a été trouvé dans un consensus et supprimé dans delta")
         return ConsensusRep(delta, data, meta, attributConsensus)
     attributMariage = MarriageAtt(delta)
-    print("attributMariage = "+attributMariage)
+    print("attributMariage : "+attributMariage)
     if attributMariage != "":
         delta = RemoveAtt(delta, attributMariage[0])
         delta = RemoveAtt(delta, attributMariage[1])
@@ -279,29 +292,38 @@ def OptSRepair(delta, data, meta):
 #définition de la méthode main
 def main():    
     print("begin")
+    cas = 1 #permet de sélectionner un scénario de test
     delta = []
-    delta = createDF()
+    delta = createDF(cas)
+    deltaBis = list(delta)
     print(delta)
     #print(delta[1])
     #print(delta[1][0])    
     delta = OneToRHS(delta) #transformer les DF pour qu'il n'y ai que 1 attribut à la main droite
-    delta = RemoveTrivialDF(delta)    
+    delta = RemoveTrivialDF(delta) 
+   
     reponse = OSRSucceeds(delta)
-    print(reponse)
+
+    print("La simplification des dépendances donne le résultat suivant : "+ str(reponse))
     if not reponse:
         print("Pas de simplification possible")
         return
     
     data = []
-    data = createData()
-    meta = createMetaData()
+    data = createData(cas)
+    #delta = list(deltaBis)
+    delta = createDF(cas)
+    delta = OneToRHS(delta)
+    delta = RemoveTrivialDF(delta) 
+    meta = createMetaData(cas)
+    print(data)
     #print(data[0])
-    #print(data[-1])
+    #print(data[-1])   
     
     #TODO : retirer les doublons
-    
-    OptSRepair(delta, data, meta)
-    
+    result = OptSRepair(delta, data, meta)
+    print("Le résultat est : ")
+    print(result)
     print("end")
 
 #méthode lancée lors de l'éxécution du cript

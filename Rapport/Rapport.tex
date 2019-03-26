@@ -130,7 +130,7 @@ Année académique 2018-2019
 \vspace*{\stretch{1}}
 \chapter*{}
 %\begin{abstract}
-Ce \emph{rapport de projet} est rendu dans le cadre du cursus de \og Master en sciences informatiques, à finalité spécialisée \fg. Le but de ce rapport est de présenter le problème qui est posé, de développer l'analyse du problème et les choix réalisés ainsi que d'exposer la réalisation.
+Ce \emph{rapport de mémoire} est rendu dans le cadre du cursus de \og Master en sciences informatiques, à finalité spécialisée \fg. Le but de ce rapport est de présenter le problème qui est posé, de développer l'analyse du problème et les choix réalisés ainsi que d'exposer la réalisation.
 %\end{abstract}
 \vspace*{\stretch{1}}
 
@@ -189,7 +189,7 @@ Dans la pratique, il peut arriver que des dépendances ne sont pas respectées. 
 \item ...
 \end{itemize}
 
-Il est important de corriger la situation (et de trouver la méthode optimale pour y arriver) parce que la qualités des informations joue un rôle important dans la qualités du traitement des données ultérieurement. Comme le dit le jargon/proverbe : \og shit in, shit out \fg. Ce qui revient à exprimer que si les données avec lesquelles on travaille ne sont pas credible, les conclusions que l'on pourra en tirer ne le seront pas non plus. En cas d'audit, ça permet aussi de calculer le degré ?d'inconsistence? de la table (on calculera la distance entre la base de données initiale et corrigée). 
+Il est important de corriger la situation (et de trouver la méthode optimale pour y arriver) parce que la qualités des informations joue un rôle important dans la qualités du traitement des données ultérieurement. Comme le dit le jargon/proverbe : \og shit in, shit out \fg. Ce qui revient à exprimer que si les données avec lesquelles on travaille ne sont pas de qualité, les conclusions que l'on pourra en tirer ne le seront pas non plus. En cas d'audit, ça permet aussi de calculer le degré ?d'inconsistence? de la table (on calculera la distance entre la base de données initiale et corrigée). 
 
 Pour remédier à ces erreurs, il faut d'une part remédier à la cause de ces incohérences mais aussi corriger les données qui sont incorrecte ou qui ont été corrompue. Pour la correction, il y a 2 solutions. Soit modifier les requêtes pour que celles-ci ne renvoient que les lignes non concernées par ces incohérences. Soit il faut trouver une base de données à l’image de la base de données existante qui, après un minimum de changements, respecte les contraintes d’intégrités. Pour cette dernière solution, deux possibllités existent également. On peut supprimer les données qui sont incorrecte ou on peut modifier les données incorrectes.
 
@@ -217,7 +217,7 @@ Les contraintes d'intégrités sont les assertions qui doivent être vérifiées
 Une dépendance fonctioenlle est une contrainte sémantique. Elle est supposée toujours vrai dans le monde réel.
 
 C'est une relation entre plusieurs attributs d'une même table. Elle definit la valeur d'un attribut (ou d'un ensemble d'attributs) en fonction d'un autre ou de plusieurs autres attributs. En effet la dépendance fonctioennelle $ X \rightarrow Y$ définit que si plusieurs lignes ont les mêmes valeurs pour un ensemble $X$ d'attributs, elles auront également les mêmes valeurs pour l'ensemble $Y$ d'attributs.
-En terme de notation, on dira : soit la table de référence T définit par la relation $R{a_1, a_2, a_3,...,a_n}$ avec n le nombre d'attribut et X et Y des sous-ensemble de R. On dit que \og Y dépend fonctionnellement de X \fg ou \og X détermine Y \fg 0si à chaque valeur de X correspond une valeur unique de Y. On écrit alors \og $ X \rightarrow Y$ \fg.
+En terme de notation, on dira : soit la table de référence T définit par la relation $R{a_1, a_2, a_3,...,a_n}$ avec n le nombre d'attribut et X et Y des sous-ensemble de R. On dit que \og Y dépend fonctionnellement de X \fg ou \og X détermine Y \fg si à chaque valeur de X correspond une valeur unique de Y. On écrit alors \og $ X \rightarrow Y$ \fg.
 
 \begin{figure}[ht]
 	\center
@@ -292,7 +292,7 @@ Soit une table définie par la relation R(A,B) qui contient les données (1, 2) 
 \section{Notions complémentaires}\label{SECcomplement}
 Ici seront détaillés des notions propre à ce travail qui ne seront peut-être pas commun aux standarts de notations habituels. Il est donc important de les comprendre avant de poursuivre la suite de la lecture.
 
-!! commencer par définir les notations comme delta !!
+TODO :  commencer par définir les notations comme delta !!
 
 \subsection{Un attribut commun à la main gauche : } 
 est un attribut « A » qui se trouve dans toutes les parties gauches des dépendances fonctionnelles de $\Delta$. Dans l'exemple de la figure \ref{picDFs}, l'attribut \fg Facility \og est donc un attribut commun à la main gauche. En présence de ce type d'attribut, trouver les données de la table initiale qui composeront la solution optimale reviendra à traité independamment les lignes en les groupant par la valeur de cet attribut et ensuite en faisant l'union des sous-ensembles.  De cette manière, pour chaque sous-ensemble, cet attribut n'a qu'une seule valeur et peut donc être supprimé dans les dépendances fonctionnelles.
