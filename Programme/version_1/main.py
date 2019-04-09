@@ -1,7 +1,7 @@
 # coding: utf-8
 
-#création d'une liste de liste de dépendances fonctionelles de test
 def createDF(cas):
+    """création d'une liste de liste de dépendances fonctionelles de test"""
     df = []
     if cas == 0:
         for i in range(0,10):
@@ -295,12 +295,16 @@ def main():
     cas = 1 #permet de sélectionner un scénario de test
     delta = []
     delta = createDF(cas)
-    deltaBis = list(delta)
     print(delta)
     #print(delta[1])
     #print(delta[1][0])    
     delta = OneToRHS(delta) #transformer les DF pour qu'il n'y ai que 1 attribut à la main droite
-    delta = RemoveTrivialDF(delta) 
+    delta = RemoveTrivialDF(delta)
+    #après les premières simplifications qui n'ont pas d'influence sur le contenu de la table, on fait une copie pour pouvoir l'utiliser dans la seconde partie
+    #du programme. Copie nécéssaire parce que python travaille avec des passage en paramètre par référence.
+    deltaBis = []
+    for element in delta:
+        deltaBis.append([list(element[0]), element[1] ])
    
     reponse = OSRSucceeds(delta)
 
@@ -311,19 +315,16 @@ def main():
     
     data = []
     data = createData(cas)
-    #delta = list(deltaBis)
-    delta = createDF(cas)
-    delta = OneToRHS(delta)
-    delta = RemoveTrivialDF(delta) 
     meta = createMetaData(cas)
     print(data)
     #print(data[0])
-    #print(data[-1])   
-    
-    #TODO : retirer les doublons
+    #print(data[-1])
+    #TODO : retirer les doublons ??
     result = OptSRepair(delta, data, meta)
     print("Le résultat est : ")
     print(result)
+    print("La distance entre la table initiale et la résolution est de : ")
+    #TODO : calculer cette distance
     print("end")
 
 #méthode lancée lors de l'éxécution du cript
